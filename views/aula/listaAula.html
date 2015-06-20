@@ -1,0 +1,54 @@
+
+<div class="form-group">
+  <div class=" col-sm-3">
+   <label  class="  control-label">Data da aula</label>
+   <input type="date"  ng-model="aula.date" class="form-control " />
+ </div>
+
+ <div class=" col-sm-3">
+   <label  class="col-md-offset-4 control-label">Turmas</label>
+   <select class="selectpicker form-control col-md-offset-4"  ng-model="turma.select" ng-options="turma.codigo for turma in turmas">
+    <option value="">Selecione uma turma</option>
+  </select>
+
+</div>
+
+</div>
+
+
+<br>
+<br>
+<br>
+<br>
+
+<div class="table-responsive ">
+
+  <table class="table table-bordered  table-condensed table-hover" >
+    <thead>
+      <tr>
+        <th>Presença</th>
+        <th>Matricula</th>
+        <th>Nome</th>
+        <th>Biblias</th>
+        <th>Revistas</th>
+
+      </tr>
+    </thead>
+    <tbody >
+      <tr dir-paginate="tur in  turma.select.aluTurma | filter:busca | itemsPerPage: pageSize"
+      current-page="currentPage" pagination-id="listaAulaPagination" ng-init="tur.seleciona = false" >
+      <td><input type="checkbox" ng-click="guardar(tur)" ng-model="tur.seleciona" /></td>
+      <td>{{tur.matricula}}</td>
+      <td>{{tur.nome}}</td>
+      <td ><input type="checkbox" name="bib" ng-if="tur.seleciona == true" ng-click="guardar(tur)"></td>
+
+
+      <td > <input  type="checkbox"  name="rev"  ng-if="tur.seleciona == true" ng-click="guardar(tur)"/></td>
+
+    </tr>
+  </tbody>
+</table>
+<dir-pagination-controls boundary-links="true"  template-url="views/dirPagination.tpl.html" pagination-id="listaAulaPagination"></dir-pagination-controls>
+</div>
+
+

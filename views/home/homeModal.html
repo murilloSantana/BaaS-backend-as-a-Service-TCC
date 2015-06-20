@@ -1,0 +1,42 @@
+<div class="section" >
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-2 col-sm-offset-0 "><br><br>
+				<a href="#home"  role="button"  class="btn btn-primary btn-sm bte " ng-click="limpar()" data-toggle="modal"><i class="glyphicon glyphicon-list-alt"></i>
+					Gerar Relatório</a>
+				</div>
+			</div>
+			<div id="home" class="modal  fade">
+				<div class="modal-dialog  ">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+							ng-click="limpar()">&times</button>
+							<h4 class="modal-title">Relatórios</h4>
+						</div>
+						<form name="tpRec">
+							<div class="modal-body">
+								<div class="col-sm-6" >
+									<select class="form-control" ng-model="relatorio" ng-options="tpRelatorio for tpRelatorio in tipoRelatorio" ng-change="contains()"  >
+										<option value="">Selecione o tipo de relatório</option>
+									</select>
+								</div>
+								<br><br>
+							</div>
+							<ul ng-repeat="aul in datas" ng-show="relatorio == 'Semanal'" >
+								<li>
+									<input type="checkbox" ng-change="gerarRelatorio(aul)" ng-model="aul.dataSelecionada">  {{aul.data | date:"dd/MM/yyyy"}}
+								</li>
+							</ul>
+						</form>
+
+						<div class="modal-footer" >
+							<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpar">Cancelar</button>
+							<button type="button" class="btn btn-primary" ng-click="geral()" data-dismiss="modal" aria-hidden="true" >Gerar</button>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

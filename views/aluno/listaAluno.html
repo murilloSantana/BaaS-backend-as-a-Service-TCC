@@ -1,0 +1,35 @@
+
+
+<div class="form-group">
+	<label  class="control-label pull-left">Turmas</label>
+	<div class="col-sm-4 ">
+		<select class="form-control" ng-model="turma" ng-change="inscreverAlunos()" ng-options="turma.codigo for turma in turmas">
+			<option value="">Selecione uma turma</option>
+
+		</select>
+	</div>
+</div>
+<br><br><br>
+<table class="table table-bordered  table-condensed table-hover" ng-show="turma != null">
+	<thead>
+		<tr>			
+			<th></th>
+
+			<th>Código</th>
+			<th>Nome do Aluno</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-class="{selecionado: aluno.selecionado}"  ng-repeat="aluno in alunosInscritos" >
+			<td>
+
+				<input type="checkbox" ng-if="!aluno.selecionado" ng-model="aluno.selecionado" />
+			</td>
+
+			<td>{{aluno.matricula}}</td>
+			<td>{{aluno.nome}}</td>
+		</tr>
+	</tbody>
+</table>
+
+

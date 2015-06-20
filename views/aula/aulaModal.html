@@ -1,0 +1,56 @@
+<div class="section " >
+  <div class="container ">
+    <div class="row ">
+      <div class="col-sm-4 " >
+        <a href="#aula"  role="button" ng-click="mudaBtn()" class="btn btn-primary btn-sm bt" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>
+          Realizar chamada</a>
+
+        </div>
+      </div>
+      <div id="aula" class="modal fade">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+              ng-click="limpaForm()">&times</button>
+              <h4 class="modal-title">Chamada</h4>
+            </div>
+            <div class="modal-body">
+              <lista-Aula ng-show="!dados"></lista-Aula>
+              
+
+              <div class="table-responsive" ng-show="dados">
+                <div class="col-md-12 ">
+                  <table class="table table-bordered table-striped table-condensed table-hover">
+                    <thead>
+                      <tr>
+
+                        <th>Data da aula</th>
+                        <th>Nome do aluno</th>
+                      </tr>
+                    </thead>
+                    <tbody >
+
+                      <tr ng-repeat="chamados in alus "  >
+                        <td></td>
+                        <td>{{chamados.nome}}</td>
+
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm()">Cancelar</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true" ng-show="edita" ng-click="editarAula(aula)">Salvar Alterações</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true" ng-show="dados" ng-click="limpaForm()" >ok</button>
+              <button type="button" class="btn btn-primary" ng-show="salva" ng-click="saveAula(tur,biblia)" >Salvar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

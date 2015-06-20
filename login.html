@@ -1,0 +1,118 @@
+   <div class="section" ng-hide="mudar" >
+       <div class="container " >
+        <div class="row">
+            <div class="col-md-6 col-sm-offset-3 ">
+                <div class="col-sm-offset-5  espacotitulo">
+                    <h1>Login</h1>
+                </div>
+                <br>
+                <form class="form-horizontal  " role="form">
+                    <div class="form-group ">
+
+                        <div class="col-sm-offset-2 col-sm-8">
+                            <input type="text" class="form-control" ng-model="usuario.login" placeholder="Login">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+
+                        <div class="col-sm-offset-2 col-sm-8">
+                            <input type="password" class="form-control" ng-model="usuario.senha" placeholder="Senha">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-8">
+                            <button type="submit" class="btn btn-block btn-primary" ng-click="logar(usuario)" contenteditable="true">Entrar</button>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-offset-4 col-sm-12">
+                        <a href="#senha" ng-click="limpaForm()" role="button" data-toggle="modal">  &nbsp; &nbsp;Esqueceu sua senha?</a>
+                    </div>
+                    <div class="criarconta">
+                        <a href="#login" ng-click="trocar()"> &nbsp;Criar uma Conta</a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="section" ng-show="mudar">
+    <div class="container ">
+        <div class="row">
+            <h1 class="col-sm-offset-3 tituloconfig hidden-xs hidden-sm ">Cadastro De Usuário</h1>
+            <br>
+            <div class="col-md-4  ">
+
+                <form class="form-horizontal" role="form">
+                    <div class="form-group ">
+
+                        <label class="col-sm-offset-12">Nome</label>
+                        <input type="text" ng-model="usuario.nome" class="form-control col-sm-3 col-sm-offset-12" >
+                    </div>
+                    <div class="form-group ">
+
+                        <label class="col-sm-offset-12">Email</label>
+                        <input type="text" ng-model="usuario.email" class="form-control col-sm-4 col-sm-offset-12" >
+                    </div>
+                    <div class="form-group ">
+
+                        <label class="col-sm-offset-12">Login</label>
+                        <input type="text" ng-model="usuario.login" class="form-control col-sm-4 col-sm-offset-12" >
+                    </div>
+                    <div class="form-group ">
+
+                        <label class="col-sm-offset-12">Senha</label>
+                        <input type="password" ng-model="usuario.senha"class="form-control col-sm-6 col-sm-offset-12" >
+                    </div>
+                    <div class="form-group ">
+
+                       <label class="col-sm-offset-12">Cargo</label>
+
+                       <select class="form-control col-sm-3 col-sm-offset-12" ng-model="usuario.cargo" ng-options="cargo for cargo in cargos"> 
+                        <option value="">Selecione um cargo</option>
+
+                    </select>
+                </div>
+                <br>
+
+                <div class="form-group  ">
+
+                    <button class="btn btn-block btn-primary  col-sm-offset-12" ng-click="salvarUsuario(usuario)"> Salvar</button>
+                    <a href="#login" class="btn btn-block btn-danger col-sm-offset-12" ng-click="trocar()">Cancelar</a>
+
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+</div>
+<div id="senha" class="modal fade">
+    <div class="modal-dialog">
+       <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+          ng-click="limpaForm()">&times</button>
+          <h4 class="modal-title">Esquece sua senha?</h4>
+      </div>
+      <div class="modal-body">
+
+        <form>
+            <div class="col-sm-6">
+                <label >Login</label>
+                <input type="text" class="form-control" ng-model="usuario.login" placeholder="Digite o seu login">
+            </div>
+        </form>
+        <br><br><br>
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm()">Cancelar</button>
+      <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true"  ng-click="recuperarSenha(usuario);" >Enviar</button>
+  </div>    
+</div>
+</div>

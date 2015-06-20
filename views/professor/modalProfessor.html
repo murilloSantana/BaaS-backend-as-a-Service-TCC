@@ -1,0 +1,119 @@
+<div class="section " >
+  <div class="container ">
+    <div class="row ">
+      <div class="col-sm-4 " >
+        <a href="#professor"  role="button" ng-click="mudaBtn()" class="btn btn-primary btn-sm bt" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>
+          adicionar novo professor</a>
+
+        </div>
+      </div>
+      <div id="professor" class="modal fade">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+              ng-click="limpaForm()">&times</button>
+              <h4 class="modal-title">Formulário de cadastro de professor</h4>
+            </div>
+            <div class="modal-body">
+              <form name="professorForm" class="form-horizontal">
+
+
+               <div class="form-group">
+                 <div class=" col-sm-4">
+                   <label  class=" col-md-offset-2 control-label">Nome</label>
+                   <input type="text" name="nome" ng-model="professor.nome" class="form-control col-md-offset-2" ng-required="true" ng-minlength="5"  ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/"/>
+
+                   <div class="col-md-offset-2">
+                     <span  ng-show="professorForm.nome.$error.required && !professorForm.nome.$pristine" class="alert-danger" > 
+                      O campo nome é obrigatório.
+                    </span>
+                    <span  ng-show="professorForm.nome.$error.minlength" class="alert-danger"> 
+                      O campo nome deve ter no mínimo 5 caracteres.
+                    </span>
+                    <span  ng-show="professorForm.nome.$error.pattern" class="alert-danger"> 
+                      O campo nome deve possuir apenas letras.
+                    </span>
+                  </div>
+
+                </div>
+
+                <div class=" col-sm-4">
+                 <label  class="col-md-offset-5 control-label">CEP</label>
+                 <input type="text" name="cep" ng-model="professor.enderecoProf[0].cep" ng-blur="atualizaCep(professor.enderecoProf[0].cep)" class="form-control col-md-offset-5 " ng-minlength="8" maxlength="8" ng-required="true" placeholder="DDDDDDDD" ng-pattern="/^\d{8}$/"/>
+
+                 <div class="col-md-offset-5">
+                   <span  ng-show="professorForm.cep.$error.required && !professorForm.cep.$pristine" class="alert-danger">
+                    O campo cep é obrigatório.
+                  </span>
+                  <span  ng-show="professorForm.cep.$error.minlength" class="alert-danger"> 
+                    O campo cep deve ter no mínimo 8 caracteres.
+                  </span>
+                  <span  ng-show="professorForm.cep.$error.pattern" class="alert-danger"> 
+                    O campo cep deve ter o formato DDDDDDDD.                                       
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="form-group">
+             <div class=" col-sm-4">
+               <label  class=" col-md-offset-2 control-label">Cidade</label>
+               <input type="text"  ng-model="enderecos.localidade" ng-disabled="true" class="form-control col-md-offset-2">
+             </div>
+             <div class=" col-sm-4">
+               <label  class="col-md-offset-5 control-label">Bairro</label>
+               <input type="text" ng-model="enderecos.bairro" ng-disabled="true" class="form-control col-md-offset-5   ">
+             </div>
+           </div>
+
+           <div class="form-group">
+             <div class=" col-sm-4">
+               <label  class=" col-md-offset-2 control-label" >Rua</label>
+               <input type="text" ng-model="enderecos.logradouro" ng-disabled="true" class="form-control col-md-offset-2">
+             </div>
+             <div class=" col-sm-4">
+               <label  class="col-md-offset-5 control-label">Complemento</label>
+               <input type="text" ng-model="enderecos.complemento" class="form-control col-md-offset-5   ">
+             </div>
+           </div>
+
+           <div class="form-group">
+             <div class=" col-sm-4">
+               <label  class=" col-md-offset-2 control-label">Telefone</label>
+               <input type="text" name="tel" ng-model="professor.telefone" class="form-control col-md-offset-2" ng-minlength="8"  ng-required="true" maxlength="9"placeholder="DDDD-DDDD ou DDDDD-DDDD"  ng-pattern="/^\d{4,5}-\d{4}$/"/>
+
+               <div class="col-md-offset-2">
+                 <span  ng-show="professorForm.tel.$error.required && !professorForm.tel.$pristine"class="alert-danger "> 
+                  O campo telefone é obrigatório.
+                </span>
+                <span  ng-show="professorForm.tel.$error.minlength" class="alert-danger">
+                  O campo telefone deve ter no mínimo 8 caracteres.
+                </span>
+                <span  ng-show="professorForm.tel.$error.pattern" class="alert-danger">
+                  O campo telefone deve ter o formato DDDDD-DDDD.                                      
+                </span>
+              </div>
+            </div>
+
+            <div class=" col-sm-4">
+              <label  class="col-md-offset-5 control-label">Data de nascimento</label>
+              <input type="date" ng-model="professor.date" class="form-control col-md-offset-5">
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm()">Cancelar</button>
+        <button type="button" class="btn btn-primary" ng-disabled="professorForm.$invalid" data-dismiss="modal" aria-hidden="true" ng-show="edita"ng-click="editarProfessor(professor)">Salvar Alterações</button>
+
+        <button type="button" class="btn btn-primary" ng-disabled="professorForm.$invalid" ng-show="salva" ng-click="saveProfessor(professor)" >Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>

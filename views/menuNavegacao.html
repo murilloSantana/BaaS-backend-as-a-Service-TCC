@@ -1,0 +1,55 @@
+<div class="section">
+    <div class="container">
+        <div class="row ">
+            <div class="col-md-12 ">
+                <div class="navbar  navbar-default navbar-fixed-top menucor">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle " data-toggle="collapse" data-target="#navbar-ex-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand"><img class="hidden-xs hidden-sm "  height="80" alt="Responsive image" src="img/logo.jpg"></a>
+                        </div>
+                        <div class="collapse navbar-collapse menu" id="navbar-ex-collapse">
+                            <ul class="nav navbar-nav">
+                                <li>
+                                    <a href="#home"> &nbsp; Home <i class="glyphicon glyphicon-home pull-left"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#professor">Professor</a>
+                                </li>
+                                <li>
+                                    <a href="#aluno">Aluno</a>
+                                </li>
+                                <li>
+                                    <a href="#turma">Turma</a>
+                                </li>
+                                <li>
+                                    <a href="#aula">Aula</a>
+                                </li>
+                                
+                                <li ng-controller="ctrlUsuario">
+                                    <div class="btn-group btn-group-lg btnuser" data-toggle="buttons">
+                                      <a class="btn btn-link dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
+                                      <ul class="dropdown-menu" role="menu">
+                                          <li>
+                                              <a href="" ng-click="edit()"><i class="glyphicon glyphicon-cog "></i> Configurações</a>
+                                          </li>
+                                          <li>
+                                            <a href="" ng-click="sair()"><i class="glyphicon glyphicon-off "></i> Sair</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+

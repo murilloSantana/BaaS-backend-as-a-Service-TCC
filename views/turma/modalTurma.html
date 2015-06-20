@@ -1,0 +1,93 @@
+<div class="section" >
+  <div class="container">
+    <div class="row ">
+
+      <div class="col-sm-2">
+        <a href="#turma" data-toggle="modal"  role="button" ng-click="mudaBtn()" class="btn btn-primary btn-sm bt"><i class="glyphicon glyphicon-plus"></i>Criar Turma</a>
+      </div>
+    </div>
+    <div id="turma" class="modal fade ">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+          <div class="modal-header ">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+            ng-click="limpaForm()">&times</button>
+            <h4 class="modal-title">Formulário de cadastro de turma</h4>
+          </div>
+          <div class="modal-body">
+            <form name="turmaForm" class="form-horizontal" ng-show="salva">
+              
+              <div class="form-group">
+               <div class=" col-sm-4">
+                 <label  class=" col-md-offset-2 control-label">Nome</label>
+                 <input type="text" name="nome" ng-model="turma.nome" class="form-control col-md-offset-2" />
+
+               </div>
+
+             </div>
+
+           </form>
+         </div>
+
+
+         <div class="table-responsive" ng-show="carregar">
+          <div class="col-md-12 ">
+            <table class="table table-bordered table-striped table-condensed table-hover" ng-init="tur=turma.selecionada.aluTurma">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Matrícula</th>
+
+                </tr>
+              </thead>
+              <tbody ng-repeat="tur in turma.selecionada.aluTurma">
+                <tr dir-paginate="aluno in alunos | filter:busca | itemsPerPage: pageSize"
+                current-page="currentPage" pagination-id="aluTurmaPagination"  ng-show="tur.objectId == aluno.objectId">
+                <td>{{aluno.nome}}</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <dir-pagination-controls boundary-links="true"  template-url="views/dirPagination.tpl.html" pagination-id="aluTurmaPagination"></dir-pagination-controls>
+
+      <div class="table-responsive" ng-show="mostraRevista">
+        <div class="col-md-12 ">
+          <table class="table table-bordered table-striped table-condensed table-hover" n>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Categoria</th>
+                <th>Tema</th>
+
+
+              </tr>
+            </thead>
+            <tbody ng-repeat="tu in turma.selecionada.turmaTrimestre">
+              <tr dir-paginate="trimestre in trimestres | filter:busca | itemsPerPage: pageSize"
+              current-page="currentPage" pagination-id="RevistaTurmaPagination"  ng-show="tu.objectId == trimestre.objectId">
+              <td></td>
+
+              <td>{{trimestre.triRev.categoria}}</td>
+              <td>{{trimestre.triRev.tema}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <dir-pagination-controls boundary-links="true"  template-url="views/dirPagination.tpl.html" pagination-id="RevistaTurmaPagination"></dir-pagination-controls>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm()">Cancelar</button>
+      <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true" ng-show="edita"ng-click="editarTurma(turma)">Salvar Alterações</button>
+
+      <button type="button" class="btn btn-primary"  ng-show="salva" ng-click="saveTurma(turma)">Salvar</button>
+      <button type="button" class="btn btn-primary"  ng-show="carregar || mostraRevista" data-dismiss="modal" aria-hidden="true">ok</button>
+
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>

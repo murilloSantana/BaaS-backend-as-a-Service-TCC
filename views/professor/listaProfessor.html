@@ -1,0 +1,33 @@
+<div class="form-group">
+	<label  class="control-label pull-left">Turmas</label>
+	<div class="col-sm-4 ">
+		<select class="form-control" ng-model="turma.select"  ng-options="turma.codigo for turma in turmas">
+			<option value="">Selecione uma turma</option>
+
+		</select>
+	</div>
+</div>
+<br>
+<br>
+<br>
+<table class="table table-bordered  table-condensed table-hover" ng-show="turma.select != null">
+	<thead>
+		<tr>
+			<th></th>
+			<th>Código</th>
+			<th>Nome</th>
+			
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="professor in professores" ng-init="professor.selecionado = false" >
+			<td>
+
+				<input type="checkbox" ng-model="professor.selecionado"  />
+			</td>
+
+			<td>{{professor.matricula}}</td>
+			<td>{{professor.nome}}</td>
+		</tr>
+	</tbody>
+</table>
