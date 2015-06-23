@@ -3,34 +3,55 @@
     <div class="row ">
 
       <div class="col-sm-2">
-        <a href="#turma" data-toggle="modal"  role="button" ng-click="mudaBtn()" class="btn btn-primary btn-sm bt"><i class="glyphicon glyphicon-plus"></i>Criar Turma</a>
+        <a href="#turma" data-toggle="modal"  role="button" ng-click="mudaBtn()" class="btn btn-primary btn-sm bt"><i class="glyphicon glyphicon-plus"></i> Criar Turma</a>
       </div>
     </div>
     <div id="turma" class="modal fade ">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog ">
+
+        <div ng-show="sucessoTurmaSave" class="alert alert-success center-block" role="alert">
+          <strong>Turma cadastrada com sucesso!</strong>  <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+        </div>
+
+        <div ng-show="erroTurmaSave" class="alert alert-danger center-block" role="alert">
+          <strong>Erro!</strong> Não foi possivel cadastrar a turma. <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+        </div>
         <div class="modal-content ">
           <div class="modal-header ">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
             ng-click="limpaForm()">&times</button>
-            <h4 class="modal-title">Formulário de cadastro de turma</h4>
+            <h4 class="modal-title">Cadastro De Turma</h4>
           </div>
           <div class="modal-body">
             <form name="turmaForm" class="form-horizontal" ng-show="salva">
-              
+
               <div class="form-group">
-               <div class=" col-sm-4">
+                <div class=" col-sm-6">
                  <label  class=" col-md-offset-2 control-label">Nome</label>
-                 <input type="text" name="nome" ng-model="turma.nome" class="form-control col-md-offset-2" />
-
-               </div>
-
-             </div>
-
-           </form>
-         </div>
+                 <input type="text" name="nome" ng-model="turma.nome" class="form-control col-md-offset-2"
+                 ng-required="true" ng-minlength="5"  ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" />
 
 
-         <div class="table-responsive" ng-show="carregar">
+                 <div class="col-md-offset-2">
+                   <span  ng-show="turmaForm.nome.$error.required && !turmaForm.nome.$pristine" class="alert-danger" > 
+                    O campo nome é obrigatório.
+                  </span>
+                  <span  ng-show="turmaForm.nome.$error.minlength" class="alert-danger"> 
+                    O campo nome deve ter no mínimo 5 caracteres.
+                  </span>
+                  <span  ng-show="turmaForm.nome.$error.pattern" class="alert-danger"> 
+                    O campo nome deve possuir apenas letras.
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+          </form>
+        </div>
+
+
+        <div class="table-responsive" ng-show="carregar">
           <div class="col-md-12 ">
             <table class="table table-bordered table-striped table-condensed table-hover" ng-init="tur=turma.selecionada.aluTurma">
               <thead>
@@ -80,9 +101,8 @@
 
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm()">Cancelar</button>
-      <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true" ng-show="edita"ng-click="editarTurma(turma)">Salvar Alterações</button>
 
-      <button type="button" class="btn btn-primary"  ng-show="salva" ng-click="saveTurma(turma)">Salvar</button>
+      <button type="button" class="btn btn-primary"  ng-show="salva" ng-click="saveTurma(turma)" ng-disabled="turmaForm.$invalid">Salvar</button>
       <button type="button" class="btn btn-primary"  ng-show="carregar || mostraRevista" data-dismiss="modal" aria-hidden="true">ok</button>
 
     </div>

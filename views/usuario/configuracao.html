@@ -1,0 +1,68 @@
+<div class="section">
+  <div class="container ">
+    <div class="row">
+      <h1 class="col-sm-offset-3 tituloconfig hidden-xs hidden-sm "> Configurar Dados Do Usuário</h1>
+      <br>
+      <div class="col-md-4  ">
+
+        <form class="form-horizontal" role="form" name="formConfigUser">
+         <div class="form-group ">
+          <alerta-Usuario   class="col-sm-12 col-sm-offset-12"></alerta-Usuario>
+
+          <label class="col-sm-offset-12">Login</label>
+          <input type="text"  ng-model="user[0].usuariosLogados.login" ng-disabled="true" class="form-control col-sm-4 col-sm-offset-12"  placeholder="Login" >
+        </div>
+
+        <div class="form-group ">
+
+          <label class="col-sm-offset-12">Email</label>
+          <input type="text" name="emailUser" ng-model="user[0].usuariosLogados.email"  class="form-control col-sm-4 col-sm-offset-12" ng-required="true" placeholder="Email" ng-trim="false">
+        </div>
+
+        <div class="col-sm-6 col-md-offset-12">
+         <span  ng-show="formConfigUser.emailUser.$error.required && !formConfigUser.emailUser.$pristine" class="alert-danger" > 
+          O campo email é obrigatório.
+        </span>
+      </div>
+      <div class="form-group ">
+
+        <label class="col-sm-offset-12">Senha</label>
+        <input type="password" ng-model="user[0].usuariosLogados.senha"class="form-control col-sm-6 col-sm-offset-12" ng-minlength="6" name="senhaUser" ng-required="true"  placeholder="Senha" >
+      </div>
+      <div class="col-sm-6 col-md-offset-12">
+       <span  ng-show="formConfigUser.senhaUser.$error.required && !formConfigUser.senhaUser.$pristine" class="alert-danger" > 
+         O campo senha é obrigatório.
+       </span>
+       <span  ng-show="formConfigUser.senhaUser.$error.minlength" class="alert-danger"> 
+         O campo senha deve ter no mínimo 6 caracteres.
+       </span>
+     </div>
+     <div class="form-group ">
+
+       <label class="col-sm-offset-12">Cargo</label>
+
+       <select name="cargoUser"class="form-control col-sm-3 col-sm-offset-12" ng-model="user[0].usuariosLogados.cargo" ng-options="cargo for cargo in cargos" ng-required="true"> 
+        <option value="">Selecione um cargo</option>
+
+      </select>
+      <div class="col-sm-6 col-md-offset-12">
+       <span  ng-show="formConfigUser.cargoUser.$error.required && !formConfigUser.cargoUser.$pristine" class="alert-danger" > 
+        O campo cargo é obrigatório.
+      </span>
+    </div>
+  </div>
+  <br>
+
+  <div class="form-group  ">
+
+    <button class="btn btn-block btn-primary  col-sm-offset-12" ng-click="editarUsuario(user)" ng-disabled="formConfigUser.$invalid"> Salvar</button>
+    <a href="" class="btn btn-block btn-danger col-sm-offset-12" ng-click="cancelarConfig()">Cancelar</a>
+
+  </div>
+</form>
+
+
+</div>
+</div>
+</div>
+</div>

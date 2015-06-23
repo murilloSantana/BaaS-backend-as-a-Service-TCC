@@ -153,3 +153,74 @@ app.directive("homeModal",function(){
 
 });
 
+app.directive("alertaProfessor",function(){
+	
+	return{
+
+		restrict:"E",
+		templateUrl:"/Tcc/views/professor/alertasProf.html"
+
+	}
+
+
+});
+
+app.directive("alertaAluno",function(){
+	
+	return{
+
+		restrict:"E",
+		templateUrl:"/Tcc/views/aluno/alertasAlu.html"
+
+	}
+
+
+});
+
+app.directive("alertaTurma",function(){
+	
+	return{
+
+		restrict:"E",
+		templateUrl:"/Tcc/views/turma/alertasTurma.html"
+
+	}
+
+
+});
+
+app.directive("alertaAula",function(){
+	
+	return{
+
+		restrict:"E",
+		templateUrl:"/Tcc/views/aula/alertasAula.html"
+
+	}
+
+
+});
+
+app.directive("alertaUsuario",function(){
+	
+	return{
+
+		restrict:"E",
+		templateUrl:"/Tcc/views/usuario/alertasUsuario.html"
+
+	}
+
+
+});
+
+app.directive("cadastro",function(){
+	
+	return{
+
+		restrict:"E",
+		templateUrl:"/Tcc/views/usuario/cadastro.html"
+
+	}
+
+
+});

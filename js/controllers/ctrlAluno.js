@@ -1,5 +1,5 @@
 
-app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$window) {
+app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$window,$timeout) {
 	$scope.currentPage = 1;
 	$scope.pageSize= 10;
 	$scope.alunos = [];
@@ -31,10 +31,19 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 			console.log(data);
 		});
 		alunosAPI.deleteAluno(aluno.objectId).success(function (response,data) {
-			$scope.carregarAluno();
 
-			alert("Aluno excluido com sucesso");
-			console.log(data);
+			$scope.sucessoAluDel = true;
+			$timeout(function() {
+				$scope.sucessoAluDel= false
+			}, 2000);
+			$timeout(function() {
+				$scope.carregarAluno();
+			}, 1000);
+		}).error(function(data){
+			$scope.erroAluDel = true;
+			$timeout(function() {
+				$scope.erroAluDel= false
+			}, 3000);
 		});
 	}
 	$scope.inscreverAlunos = function(){
@@ -46,7 +55,11 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 			}
 		}
 		if($scope.alunosInscritos.length < 1){
-			alert("Não existem alunos disponiveis para cadastrado")
+			$scope.erroAluDisponivel = true;
+			$timeout(function() {
+				$scope.erroAluDisponivel= false
+			}, 3000);
+
 		}
 
 	};
@@ -66,24 +79,70 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 
 
 			turmasAPI.updateTurma($scope.turma.objectId,turma).success(function(response,data){
-				alert("Turma editada com sucesso");
-				console.log(data);
-			});
+				
+				$scope.sucessoAluInscrito = true;
+				$timeout(function() {
+					$scope.sucessoAluInscrito= false
+				}, 2000);
+				$timeout(function() {
+					$window.location.reload();
+
+					$scope.encaminhar();
+				}, 1000);
+			}).error(function(data){
+				$scope.erroAluInscrito = true;
+				$timeout(function() {
+					$scope.erroAluInscrito= false
+				}, 3000);
+			})
 
 		}
 	}
 
-	$scope.editarAluno = function(aluno,objectId){
-		alunosAPI.updateAluno(aluno.objectId,aluno).success(function(response,data){
+	$scope.editarAluno = function(aluno){
+		servicesAPI.deleteEndereco(aluno.aluEndereco.objectId).success(function (response,data) {
 			$scope.carregarAluno();
 
-			alert("Aluno editado com sucesso");
-			console.log(data);
+		});
+
+
+		aluno={
+			"__meta":aluno.__meta,
+			"objectId":aluno.objectId,
+			"nome":aluno.nome,
+			"dtNascimento":aluno.date,
+			"telefone":aluno.telefone,
+			"aluEndereco": 
+			{
+				"___class":"Enderecos",
+				"cep":$scope.enderecos.cep,
+				"bairro":$scope.enderecos.bairro,
+				"municipio":$scope.enderecos.localidade,
+				"rua":$scope.enderecos.logradouro,
+				"complemento": $scope.enderecos.complemento,
+
+			},
+
+		}
+		alunosAPI.updateAluno(aluno.objectId,aluno).success(function(response,data){
+			
+			$scope.sucessoAluEdit = true;
+			$timeout(function() {
+				$scope.sucessoAluEdit= false
+			}, 2000);
+			$timeout(function() {
+				$window.location.reload();
+			}, 1000);
+		}).error(function(data){
+			$scope.erroAluEdit = true;
+			$timeout(function() {
+				$scope.erroAluEdit= false
+			}, 3000);
 		});
 
 	}
 
-	$scope.mudaBtn = function(salva,edita){
+	$scope.mudaBtn = function(){
 		$scope.salva= true;
 		$scope.edita = false;
 		$scope.mudarTur = false;
@@ -91,8 +150,14 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 
 	}
 
-	$scope.edit = function(aluno,edita,salva){
+	$scope.edit = function(aluno){
 		$scope.aluno =  aluno;
+		data = new Date(aluno.dtNascimento)
+		$scope.aluno.date = data;
+		$scope.enderecos = aluno.aluEndereco;
+		$scope.enderecos.logradouro = aluno.aluEndereco.rua;
+		$scope.enderecos.localidade = aluno.aluEndereco.municipio;
+		$scope.enderecos.complemento = aluno.aluEndereco.complemento;
 		$scope.edita = true;
 		$scope.salva = false;
 		$scope.mudarTur = false;
@@ -138,14 +203,19 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 
 		}
 		alunosAPI.setAluno(aluno).success(function(data){
-			$window.alert("Aluno cadastrado com sucesso")
-
-			$window.location.reload();
-
-			console.log(data);
-
-
-		})
+			$scope.sucessoAluSave = true;
+			$timeout(function() {
+				$scope.sucessoAluSave= false
+			}, 2000);
+			$timeout(function() {
+				$window.location.reload();
+			}, 1000);
+		}).error(function(data){
+			$scope.erroAluSave = true;
+			$timeout(function() {
+				$scope.erroAluSave= false
+			}, 3000);
+		});
 	};
 	$scope.encaminhar = function(){
 		$(window.document.location).attr('href',"/Tcc/index.html#/aluno"); 
@@ -153,11 +223,20 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 
 
 	$scope.atualizaCep = function(cep){
-		servicesAPI.getEndereco(cep).success(function (response) {
-			$scope.enderecos = response;
-			console.log(response);
 
-		});
+		if($scope.aluno.aluEndereco.cep.length == 8){
+			servicesAPI.getEndereco(cep).success(function (response) {
+				$scope.enderecos = response;
+
+			}).error(function(data){
+				$scope.achouCep = true;
+				$timeout(function() {
+					$scope.achouCep= false
+				}, 3000);
+
+
+			});
+		}
 	};
 
 	$scope.mudarTurma = function(aluno,turma){
@@ -175,8 +254,12 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 			}
 		}
 		if(!achado){
-			alert("Este aluno não está cadastrado em nenhuma turma")
-			$window.location.reload()
+			$scope.naoCadastrado = true;
+			$timeout(function() {
+				$scope.naoCadastrado= false
+				$window.location.reload()
+
+			}, 2000);
 		}
 
 
@@ -190,7 +273,7 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 			})
 		}
 
-		
+
 
 
 
@@ -205,12 +288,27 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 
 		alunosAPI.updateAluno($scope.turmas[$scope.cont].aluTurma[$scope.contador].objectId,aluno).success(function(response,data){
 			console.log(data);
-		});
+		}).error(function(data){
+			$scope.erroAluMudar = true;
+			$timeout(function() {
+				$scope.erroAluMudar= false
+			}, 3000);
+		})
 
 		turmasAPI.updateTurma($scope.turmas[$scope.cont].objectId,turma).success(function(response,data){
-			alert("Aluno removido da turma");
-			$window.location.reload();
-			console.log(data);
+			
+			$scope.sucessoAluMudar = true;
+			$timeout(function() {
+				$scope.sucessoAluMudar= false
+			}, 2000);
+			$timeout(function() {
+				$window.location.reload();
+			}, 1000);
+		}).error(function(data){
+			$scope.erroAluMudar = true;
+			$timeout(function() {
+				$scope.erroAluMudar= false
+			}, 3000);
 		});
 
 	}

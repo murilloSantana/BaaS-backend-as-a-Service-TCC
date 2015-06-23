@@ -1,0 +1,66 @@
+ 
+<menu></menu>
+<div class="section" >
+    <div class="container ">
+
+        <turma-Modal></turma-Modal>
+        <revista-Modal></revista-Modal>
+
+        <pesquisar></pesquisar>
+
+        <div class=" col-sm-offset-11">
+            <p> Turmas por página</p>
+
+            <select   ng-model="pageSize"
+            ng-options="p for p in perPagePresets">
+        </select>
+
+    </div>
+    <br>
+    <alerta-Turma></alerta-Turma>
+    <div class="table-responsive" >
+        <div class="col-md-12 ">
+            <table class="table table-bordered table-striped table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th><select class="control-form"  ng-model="turma.selecionada"  ng-options="turma.nome for turma in turmas"  ng-options="turma.nome for turma in turmas" >
+                            <option value=""> Selecione uma turma</option>
+                        </select></th>                           
+                        <th ng-show="turma.selecionada != null">Código</th>
+                        <th ng-show="turma.selecionada != null">Revista</th>
+                        <th ng-show="turma.selecionada != null">Data de criação</th>
+                        <th ng-show="turma.selecionada != null">Trimestre</th>
+                        <th ng-show="turma.selecionada != null">Ano</th>
+                        <th ng-show="turma.selecionada != null"></th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="tu in turma.selecionada.turmaTrimestre">
+                    <tr dir-paginate="trimestre in trimestres | filter:busca | itemsPerPage: pageSize"
+                    current-page="currentPage" pagination-id="turmaPagination"  ng-show="tu.objectId == trimestre.objectId">
+                    <td></td>
+                    <td></td>
+                    <td>{{trimestre.triRev.categoria}} <a href="#turma" class="info"  role="button" data-toggle="modal" ng-click="mostrarRevista()" ng-show="trimestre.triRev != null"><i class="glyphicon glyphicon-modal-window"></i><span>Ao clicar no botão, carregará todos os dados da respectiva revista  </span></a></td>
+                    <td>{{tu.created | date:"dd/MM/yyyy"}}</td>
+
+                    <td>{{trimestre.trimestre}}</td>
+                    <td>{{trimestre.ano}}</td>
+
+                    <td>
+
+                        <a href="#turma" class="btn btn-danger btn-xs delete" ng-click="excluirTurma(tu)"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                        <a href="#turma" class="btn btn-success btn-xs " ng-click="fecharTrimestre(turma)"><i class="glyphicon glyphicon-time"></i> Fechar Trimestre</a>
+                        <a href="#turma" class="btn btn-primary btn-xs " role="button" data-toggle="modal" ng-click="carregarAlunosTur(turma)"><i class="glyphicon glyphicon-user"></i> Alunos</a>
+                        <a href="#turma" class="btn btn-warning btn-xs "  ng-click="removerProfTurma(turma.selecionada)"><i class="glyphicon glyphicon-remove"></i> Remover professor</a>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+        <dir-pagination-controls boundary-links="true"  template-url="views/dirPagination.tpl.html" pagination-id="turmaPagination"></dir-pagination-controls>
+    </div>
+</div>
+
+</div>
+</div>
+<div class="section section-primary rodape"></div>                        
+

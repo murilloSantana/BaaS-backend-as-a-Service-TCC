@@ -4,17 +4,24 @@
 		<div class="row">
 			<div class="col-sm-2 col-sm-offset-0 ">
 				<a href="#profTurma"  role="button"  class="btn btn-primary btn-sm bte " data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>
-					Inserir professor em turma</a>
+					Inserir Professor Em Turma</a>
 
 				</div>
 			</div>
 			<div id="profTurma" class="modal  fade">
 				<div class="modal-dialog modal-lg ">
+					<div ng-show="sucessoProfInserir" class="alert alert-success center-block" role="alert">
+						<strong> Inserção de Professor efetuada com sucesso!</strong>  <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+					</div>
+
+					<div ng-show="erroProfInserir" class="alert alert-danger center-block" role="alert">
+						<strong>Erro!</strong> Não foi possivel inserir o professor na turma. <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+					</div>
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="limpaForm();encaminhar()"
 							>&times</button>
-							<h4 class="modal-title">Inserção de professores na turma</h4>
+							<h4 class="modal-title">Inserir Professor Em Turma</h4>
 						</div>
 						<div class="modal-body">
 
@@ -28,7 +35,7 @@
 							<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm();encaminhar()">Cancelar</button>
 
 
-							<button type="button" class="btn btn-primary"  data-dismiss="modal" aria-hidden="true"  ng-click="saveProfTurma(turma);encaminhar()">Salvar</button>
+							<button type="button" class="btn btn-primary"  ng-click="saveProfTurma(turma)">Salvar</button>
 						</div>
 					</div>
 				</div>

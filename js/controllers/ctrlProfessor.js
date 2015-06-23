@@ -1,5 +1,5 @@
 
-app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,servicesAPI,turmasAPI) {
+app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,servicesAPI,turmasAPI,$timeout) {
 	$scope.currentPage = 1;
 	$scope.pageSize= 10;
 	var professores = [];
@@ -19,6 +19,12 @@ app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,services
 
 		});
 	};
+	$scope.carregarEnderecos = function(){
+		servicesAPI.getEnderecoProfAlu().success(function (response) {
+			$scope.tabEnderecos = response.data;
+
+		});
+	};
 
 	$scope.excluirProfessor = function(professor){
 		servicesAPI.deleteEndereco(professor.enderecoProf.objectId).success(function (response,data) {
@@ -28,23 +34,72 @@ app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,services
 			console.log(data);
 		});
 		professoresAPI.deleteProfessor(professor.objectId).success(function (response,data) {
-			$scope.carregarProfessor();
 
-			alert("Professor excluido com sucesso");
-
+			$scope.sucessoProfDel = true;
+			$timeout(function() {
+				$scope.sucessoProfDel= false
+			}, 2000);
+			$timeout(function() {
+				$scope.carregarProfessor();
+			}, 1000);
 			console.log(data);
+		}).error(function(data){
+			$scope.erroProfDel = true;
+			$timeout(function() {
+				$scope.erroProfDel= false
+			}, 3000);
+
+
 		});
 		
 	}
 
-	$scope.editarProfessor = function(professor,objectId){
-		professoresAPI.updateProfessor(professor.objectId,professor).success(function(response,data){
-			console.log(response);
+	$scope.editarProfessor = function(professor){
 
+		servicesAPI.deleteEndereco(professor.enderecoProf.objectId).success(function (response,data) {
 			$scope.carregarProfessor();
 
-			alert("Professor editado com sucesso");
+
+			console.log(data);
 		});
+		professor={
+			"__meta":professor.__meta,
+			"objectId":professor.objectId,
+			"nome":professor.nome,
+			"DataNascimento":professor.date,
+			"telefone":professor.telefone,
+			"enderecoProf": 
+			{
+				"___class":"Enderecos",
+				"cep":$scope.enderecos.cep,
+				"bairro":$scope.enderecos.bairro,
+				"municipio":$scope.enderecos.localidade,
+				"rua":$scope.enderecos.logradouro,
+				"complemento": $scope.enderecos.complemento
+
+			},
+
+		}
+		professoresAPI.updateProfessor(professor.objectId,professor).success(function(response,data){
+
+			$scope.sucessoProfEdit = true;
+			$timeout(function() {
+				$scope.sucessoProfEdit= false
+			}, 2000);
+			$timeout(function() {
+				$scope.carregarProfessor();
+				$window.location.reload();
+			}, 1000);
+			console.log(data);
+		}).error(function(data){
+			$scope.erroProfEdit = true;
+			$timeout(function() {
+				$scope.erroProfDel= false
+			}, 3000);
+
+
+		});
+
 
 	}
 
@@ -52,7 +107,7 @@ app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,services
 		var professorSelecionado = $scope.professores.filter(function (professor) {
 			if (professor.selecionado) return professor;
 		});
-		
+
 		for(var i=0;i<$scope.professores.length;i++){
 
 			$scope.professores[i].profTurma.filter(function(elemento){
@@ -74,28 +129,50 @@ app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,services
 
 
 				professoresAPI.updateProfessor(professorSelecionado[0].objectId,professor).success(function(response,data){
-					$window.alert("Professor inserido com sucesso")
-					console.log(data);
+					
+					$scope.sucessoProfInserir = true;
+					$timeout(function() {
+						$scope.sucessoProfInserir= false
+					}, 2000);
+					$timeout(function() {
+						$scope.carregarProfessor();
+						$window.location.reload();
+						$scope.encaminhar();
+
+					}, 1000);
+				}).error(function(data){
+					$scope.erroProfInserir = true;
+					$timeout(function() {
+						$scope.erroProfInserir= false
+					}, 3000);
 				});
 			}
 		}							
 	}
 
 
-	$scope.mudaBtn = function(salva,edita){
+	$scope.mudaBtn = function(){
 		$scope.salva = true;
 		$scope.edita = false;
 
 
 	}
 
-	$scope.editProf = function(professor,edita,salva){
+	$scope.editProf = function(professor){
+
 		$scope.professor = professor;
-		$scope.enderecos = enderecos;
+		data = new Date(professor.DataNascimento)
+		$scope.professor.date = data;
 		$scope.edita = true;
 		$scope.salva = false;
+		$scope.enderecos = professor.enderecoProf;
+		$scope.enderecos.logradouro = professor.enderecoProf.rua;
+		$scope.enderecos.localidade = professor.enderecoProf.municipio;
+		$scope.enderecos.complemento = professor.enderecoProf.complemento;
+
 
 	}
+
 
 
 	$scope.limpaForm = function(){
@@ -127,22 +204,42 @@ app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,services
 
 		}
 		professoresAPI.setProfessor(professor).success(function(data){
-			$window.alert("Professor cadastrado com sucesso")
-
-			$window.location.reload();
+			$scope.sucessoProf = true;
+			$timeout(function() {
+				$scope.sucessoProf= false
+			}, 2000);
+			$timeout(function() {
+				$window.location.reload();
+			}, 1000);
 
 			console.log(data);
 
 
-		})
+		}).error(function(data){
+			$scope.erroProf = true;
+			$timeout(function() {
+				$scope.erroProf= false
+			}, 3000);
+
+
+		});
 	};
 
 	$scope.atualizaCep = function(cep){
-		servicesAPI.getEndereco(cep).success(function (response) {
-			$scope.enderecos = response;
-			console.log(response);
+		if($scope.professor.enderecoProf.cep.length == 8){
 
-		});
+			servicesAPI.getEndereco(cep).success(function (response) {
+				$scope.enderecos = response;
+
+			}).error(function(data){
+				$scope.achouCep = true;
+				$timeout(function() {
+					$scope.achouCep= false
+				}, 3000);
+
+
+			});
+		}
 	};
 
 
@@ -151,10 +248,9 @@ app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,services
 	}
 
 
-
 	$scope.carregarTurma();
-
 	$scope.carregarProfessor();
+	$scope.carregarEnderecos();
 
 });
 

@@ -1,0 +1,99 @@
+<div class="section" ng-show="mudar">
+  <div class="container ">
+    <div class="row">
+      <h1 class="col-sm-offset-3 tituloconfig hidden-xs hidden-sm ">Cadastro De Usuário</h1>
+      <br>
+
+      <div class="col-md-4  ">
+        <form class="form-horizontal" role="form" name="formSaveUser">
+
+          <div class="form-group ">
+            <alerta-Usuario class="col-sm-12 col-sm-offset-12"></alerta-Usuario>
+
+            <label class="col-sm-offset-12">Nome</label>
+            <input type="text" ng-model="usuario.nome" class="form-control col-sm-3 col-sm-offset-12" ng-required="true" name="nomeUser" ng-minlength="5" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" >
+          </div>
+
+          <div class="col-sm-6 col-md-offset-12">
+           <span  ng-show="formSaveUser.nomeUser.$error.required && !formSaveUser.nomeUser.$pristine" class="alert-danger" > 
+            O campo nome é obrigatório.
+          </span>
+          <span  ng-show="formSaveUser.nomeUser.$error.minlength" class="alert-danger"> 
+            O campo nome deve ter no mínimo 5 caracteres.
+          </span>
+          <span  ng-show="formSaveUser.nomeUser.$error.pattern" class="alert-danger"> 
+            O campo nome deve possuir apenas letras.
+          </span>
+        </div>
+
+        <div class="form-group ">
+
+          <label class="col-sm-offset-12">Email</label>
+          <input type="text" ng-model="usuario.email" class="form-control col-sm-4 col-sm-offset-12" ng-required="true" name="emailUser">
+        </div>
+
+        <div class="col-sm-6 col-md-offset-12">
+          <span  ng-show="formSaveUser.emailUser.$error.required && !formSaveUser.emailUser.$pristine" class="alert-danger" > 
+            O campo email é obrigatório.
+          </span>
+        </div>
+        <div class="form-group ">
+
+          <label class="col-sm-offset-12">Login</label>
+          <input type="text" ng-model="usuario.login" class="form-control col-sm-4 col-sm-offset-12" ng-required="true" name="loginUser" minlength="5"  >
+        </div>
+
+        <div class="col-sm-6 col-md-offset-12">
+          <span  ng-show="formSaveUser.loginUser.$error.required && !formSaveUser.loginUser.$pristine" class="alert-danger" > 
+            O campo login é obrigatório.
+          </span>
+          <span  ng-show="formSaveUser.loginUser.$error.minlength" class="alert-danger"> 
+           O campo login deve ter no mínimo 5 caracteres.
+         </span>
+
+       </div>
+
+       <div class="form-group ">
+
+        <label class="col-sm-offset-12">Senha</label>
+        <input type="password" name="senha" ng-model="usuario.senha"class="form-control col-sm-6 col-sm-offset-12" ng-required="true"  placeholder="Senha" ng-minlength="6">
+      </div>
+
+      <div class="col-sm-6 col-md-offset-12">
+        <span  ng-show="formSaveUser.senha.$error.required && !formSaveUser.senha.$pristine" class="alert-danger" > 
+         O campo senha é obrigatório.
+       </span>
+       <span  ng-show="formSaveUser.senha.$error.minlength" class="alert-danger"> 
+         O campo senha deve ter no mínimo 6 caracteres.
+       </span>
+     </div>
+     <div class="form-group ">
+
+       <label class="col-sm-offset-12">Cargo</label>
+
+       <select class="form-control col-sm-3 col-sm-offset-12" ng-model="usuario.cargo" ng-options="cargo for cargo in cargos" ng-required="true" name="cargoUser"> 
+        <option value="">Selecione um cargo</option>
+
+      </select>
+    </div>
+    <div class="col-sm-6 col-md-offset-12">
+      <span  ng-show="formSaveUser.cargoUser.$error.required && !formSaveUser.cargoUser.$pristine" class="alert-danger" > 
+       O campo cargo é obrigatório.
+     </span>
+
+   </div>
+   <br>
+
+   <div class="form-group  ">
+
+     <button class="btn btn-block btn-primary  col-sm-offset-12" ng-click="salvarUsuario(usuario)" ng-disabled="formSaveUser.$invalid"> Salvar</button>
+     <a href="#login" class="btn btn-block btn-danger col-sm-offset-12" ng-click="trocar()">Cancelar</a>
+
+   </div>
+ </form>
+
+
+</div>
+</div>
+</div>
+</div>

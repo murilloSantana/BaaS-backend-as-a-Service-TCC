@@ -7,15 +7,28 @@
 
         </div>
       </div>
+
       <div id="aluno" class="modal  fade">
         <div class="modal-dialog modal-lg ">
+          <div ng-show="achouCep" class="alert alert-danger center-block" role="alert">
+            <strong>Erro!</strong> O CEP informado é inválido. <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+          </div>
+          <div ng-show="sucessoAluSave" class="alert alert-success center-block" role="alert">
+            <strong> Aluno cadastrado com sucesso!</strong>  <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+          </div>
+
+          <div ng-show="erroAluSave" class="alert alert-danger center-block" role="alert">
+            <strong>Erro!</strong> Não foi possivel cadastrar o Aluno. <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+          </div>
           <div class="modal-content">
             <div class="modal-header">
+
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
               ng-click="limpaForm()">&times</button>
-              <h4 class="modal-title">Formulário de cadastro de aluno</h4>
+              <h4 class="modal-title">Cadastro De Aluno</h4>
             </div>
             <div class="modal-body">
+
               <form name="alunoForm" class="form-horizontal">
 
 
@@ -40,16 +53,14 @@
 
                 <div class=" col-sm-4">
                  <label  class="col-md-offset-5 control-label">CEP</label>
-                 <input type="text" name="cep" ng-model="aluno.aluEndereco[0].cep" ng-blur="atualizaCep(aluno.aluEndereco[0].cep)" class="form-control col-md-offset-5 " ng-minlength="8" maxlength="8" ng-required="true" placeholder="DDDDDDDD" ng-pattern="/^\d{8}$/"/>
+                 <input type="text" name="cep" ng-model="aluno.aluEndereco.cep" ng-keyup="atualizaCep(aluno.aluEndereco.cep)"  class="form-control col-md-offset-5 " ng-minlength="8" maxlength="8" ng-required="true" placeholder="DDDDDDDD" ng-pattern="/^\d{8}$/"/>
 
                  <div class="col-md-offset-5">
                    <span  ng-show="alunoForm.cep.$error.required && !alunoForm.cep.$pristine" class="alert-danger">
                     O campo cep é obrigatório.
                   </span>
-                  <span  ng-show="alunoForm.cep.$error.minlength" class="alert-danger"> 
-                    O campo cep deve ter no mínimo 8 caracteres.
-                  </span>
-                  <span  ng-show="alunoForm.cep.$error.pattern" class="alert-danger"> 
+                  
+                  <span  ng-show="alunoForm.cep.$error.pattern && alunoForm.cep.$error.minlength" class="alert-danger"> 
                     O campo cep deve ter o formato DDDDDDDD.                                       
                   </span>
                 </div>
@@ -78,11 +89,11 @@
                <input type="text" ng-model="enderecos.complemento" class="form-control col-md-offset-5   ">
              </div>
            </div>
-           
+
            <div class="form-group">
              <div class=" col-sm-4">
                <label  class=" col-md-offset-2 control-label">Telefone</label>
-               <input type="text" name="tel" ng-model="aluno.telefone" class="form-control col-md-offset-2" ng-minlength="8"  ng-required="true" maxlength="9"placeholder="DDDD-DDDD ou DDDDD-DDDD"  ng-pattern="/^\d{4,5}-\d{4}$/"/>
+               <input type="text" name="tel" ng-model="aluno.telefone" class="form-control col-md-offset-2" ng-minlength="8"  ng-required="true" maxlength="10"placeholder="DDDD-DDDD ou DDDDD-DDDD"  ng-pattern="/^\d{4,5}-\d{4}$/"/>
 
                <div class="col-md-offset-2">
                  <span  ng-show="alunoForm.tel.$error.required && !alunoForm.tel.$pristine"class="alert-danger "> 
@@ -111,12 +122,16 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm()">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="alunoForm.$invalid" aria-hidden="true" ng-show="edita" ng-click="editarAluno(aluno)">Salvar Alterações</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="alunoForm.$invalid" aria-hidden="true" ng-show="edita" ng-click="editarAluno(aluno,enderecos)">Salvar Alterações</button>
 
         <button type="button" class="btn btn-primary" ng-disabled="alunoForm.$invalid" ng-show="salva" ng-click="saveAluno(aluno)">Salvar</button>
       </div>
+
     </div>
+
   </div>
+
 </div>
+
 </div>
 </div>

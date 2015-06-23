@@ -4,17 +4,28 @@
 		<div class="row">
 			<div class="col-sm-2 col-sm-offset-0 ">
 				<a href="#aluTurma"  role="button"  class="btn btn-primary btn-sm bte " data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>
-					Inserir aluno em turma</a>
+					Inserir Aluno Em Turma</a>
 
 				</div>
 			</div>
 			<div id="aluTurma" class="modal  fade">
 				<div class="modal-dialog modal-lg ">
+					<div ng-show="erroAluDisponivel" class="alert alert-danger center-block" role="alert">
+						<strong>Erro!</strong> Não existem Alunos disponiveis para cadastro. <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+					</div>
+
+					<div ng-show="sucessoAluInscrito" class="alert alert-success center-block" role="alert">
+						<strong> Inserção de Aluno efetuada com sucesso!</strong>  <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+					</div>
+
+					<div ng-show="erroAluInscrito" class="alert alert-danger center-block" role="alert">
+						<strong>Erro!</strong> Não foi possivel inserir o aluno na turma. <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+					</div>
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
 							ng-click="limpaForm();encaminhar()">&times</button>
-							<h4 class="modal-title">Inserção de alunos na turma</h4>
+							<h4 class="modal-title">Inserir Aluno Em Turma</h4>
 						</div>
 						<div class="modal-body">
 
@@ -26,7 +37,7 @@
 
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm();encaminhar()">Cancelar</button>
-							<button type="button" class="btn btn-primary" ng-click="editarTurma(turma);encaminhar()" data-dismiss="modal" aria-hidden="true" >Salvar</button>
+							<button type="button" class="btn btn-primary" ng-click="editarTurma(turma)"  >Salvar</button>
 							
 						</div>
 					</div>

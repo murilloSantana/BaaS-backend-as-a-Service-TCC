@@ -26,6 +26,7 @@ app.factory("turmasAPI", function($http,$window){
 			}
 
 		}).error(function(data){
+			
 			console.log(data);
 
 		});

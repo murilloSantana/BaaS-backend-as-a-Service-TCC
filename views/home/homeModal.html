@@ -17,22 +17,40 @@
 						<form name="tpRec">
 							<div class="modal-body">
 								<div class="col-sm-6" >
-									<select class="form-control" ng-model="relatorio" ng-options="tpRelatorio for tpRelatorio in tipoRelatorio" ng-change="contains()"  >
-										<option value="">Selecione o tipo de relatório</option>
+									<select class="form-control" ng-model="relatorio" ng-options="tpRelatorio for tpRelatorio in tipoRelatorio" ng-change="contains();getAno()"  >
+										<option value="" >Selecione o tipo de relatório</option>
 									</select>
 								</div>
 								<br><br>
 							</div>
-							<ul ng-repeat="aul in datas" ng-show="relatorio == 'Semanal'" >
-								<li>
-									<input type="checkbox" ng-change="gerarRelatorio(aul)" ng-model="aul.dataSelecionada">  {{aul.data | date:"dd/MM/yyyy"}}
-								</li>
-							</ul>
+							
+							<div class="modal-body">
+								<div class="col-sm-6" >
+									<select class="form-control" ng-model="aul.dataSelecionada" ng-options='data.data | date:"dd/MM/yyyy" for data in datas '  ng-show="relatorio == 'Semanal'" >
+										<option value="" >Selecione o tipo de relatório</option>
+									</select>
+
+									<select class="form-control" ng-model="relTrimestre.select" ng-options="relTrimestre for relTrimestre in tipoRelatorioTrimestre"  ng-show="relatorio == 'Trimestral'" >
+										<option value="" >Selecione o tipo de relatório</option>
+									</select>
+
+									<select class="form-control" ng-model="relAnual.select"  ng-options="relAnual for relAnual in anoRelatorio"  ng-show="relatorio == 'Anual'" >
+										<option value="" >Selecione o tipo de relatório</option>
+									</select>
+								</div>
+							</div>
+							
+
+							<br><br>
 						</form>
 
 						<div class="modal-footer" >
 							<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpar">Cancelar</button>
-							<button type="button" class="btn btn-primary" ng-click="geral()" data-dismiss="modal" aria-hidden="true" >Gerar</button>
+							<button type="button" class="btn btn-primary" ng-click="geral();colocaFalse()" data-dismiss="modal" aria-hidden="true" ng-show="relatorio == 'Semanal'">Gerar</button>
+
+							<button type="button" class="btn btn-primary" ng-click="relatorioTrimestral()" data-dismiss="modal" aria-hidden="true" ng-show="relatorio == 'Trimestral'">Gerar</button>
+
+							<button type="button" class="btn btn-primary" ng-click="relatorioAnual()" data-dismiss="modal" aria-hidden="true" ng-show="relatorio == 'Anual'">Gerar</button>
 
 						</div>
 					</div>

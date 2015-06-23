@@ -11,13 +11,26 @@ app.factory("servicesAPI", function($http){
 				'Content-Type':'application/json'
 			}
 
+		})
+	}
+
+	var _getEnderecoProfAlu = function(){
+		return $http.get('https://api.backendless.com/v1/data/Enderecos', 
+		{
+
+			headers:{
+				'application-id': '6FE67292-F413-9B0A-FF75-FD3594DF2300',
+				'secret-key'    : '27C738CA-2AE7-F02B-FFCA-7BEC526B9A00',
+				'Content-Type':'application/json'
+			}
+
 		}).error(function(data){
 			console.log(data);
 
 		});
+
 	}
 
-	
 	
 
 	var _deleteEndereco = function(objectId){
@@ -175,6 +188,7 @@ app.factory("servicesAPI", function($http){
 	}
 	return {
 		getEndereco: _getEndereco,
+		getEnderecoProfAlu: _getEnderecoProfAlu,
 		deleteEndereco: _deleteEndereco,
 		setUsuario: _setUsuario,
 		login: _login,

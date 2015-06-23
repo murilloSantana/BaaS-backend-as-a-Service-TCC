@@ -2,16 +2,23 @@
   <div class="container">
     <div class="row ">
      <div class="col-sm-2 ">
-      <a href="#modalRevista" data-toggle="modal"  role="button"  class="btn btn-primary btn-sm bte"><i class="glyphicon glyphicon-plus"></i>Inserir revista em Turma</a>
-    </div>
-  </div>
-  <div id="modalRevista" class="modal fade ">
+       <a href="#modalRevista" data-toggle="modal"  role="button"  class="btn btn-primary btn-sm bte"><i class="glyphicon glyphicon-plus"></i> Inserir Revista Em Turma</a>
+     </div>
+   </div>
+   <div id="modalRevista" class="modal fade ">
     <div class="modal-dialog modal-lg">
+      <div ng-show="sucessoTurmaRev" class="alert alert-success center-block" role="alert">
+        <strong>Cadastro de Revista efetuado com sucesso!</strong>  <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+      </div>
+
+      <div ng-show="erroTurmaRev" class="alert alert-danger center-block" role="alert">
+        <strong>Erro!</strong> Não foi possivel cadastrar a Revista. <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+      </div>
       <div class="modal-content ">
         <div class="modal-header ">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
           ng-click="limpaForm();encaminhar()">&times</button>
-          <h4 class="modal-title">Formulário de cadastro de revista</h4>
+          <h4 class="modal-title">Cadastro De Revista</h4>
         </div>
         <div class="modal-body">
           <form name="revistaForm" class="form-horizontal">
@@ -51,9 +58,9 @@
 
        <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm();encaminhar()">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true" ng-show="edita" ng-click="editarTurma(turma);encaminhar()">Salvar Alterações</button>
+        
 
-        <button type="button" class="btn btn-primary"   ng-click="saveRevista(turma);encaminhar()">Salvar</button>
+        <button type="button" class="btn btn-primary"   ng-click="saveRevista(turma)">Salvar</button>
 
       </div>
     </div>

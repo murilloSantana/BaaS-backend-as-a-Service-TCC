@@ -2,51 +2,51 @@ app.config(["$routeProvider","$locationProvider", function ($routeProvider,$loca
 
 	$routeProvider
 	.when("/login", {
-		templateUrl: "/Tcc/login.html",
+		templateUrl: "/Tcc/views/usuario/login.html",
 		controller: "ctrlUsuario"
 	})
 	.when("/aluno", {
-		templateUrl: "/Tcc/aluno.html",
+		templateUrl: "/Tcc/views/aluno/aluno.html",
 		controller: "ctrlAluno"
 	})
 	.when("/aluTurma", {
-		templateUrl: "/Tcc/aluno.html",
+		templateUrl: "/Tcc/views/aluno/aluno.html",
 		controller: "ctrlAluno"
 	})
 	.when("/professor", {
-		templateUrl: "/Tcc/professor.html",
+		templateUrl: "/Tcc/views/professor/professor.html",
 		controller: "ctrlProfessor"
 	})
 	.when("/profTurma", {
-		templateUrl: "/Tcc/professor.html",
+		templateUrl: "/Tcc/views/professor/professor.html",
 		controller: "ctrlProfessor"
 	})
 	.when("/turma", {
-		templateUrl: "/Tcc/turma.html",
+		templateUrl: "/Tcc/views/turma/turma.html",
 		controller: "ctrlTurma"
 	})
 	.when("/aula", {
-		templateUrl: "/Tcc/aula.html",
+		templateUrl: "/Tcc/views/aula/aula.html",
 		controller: "ctrlAula"
 	})
 	.when("/cadastro", {
-		templateUrl: "/Tcc/registro.html",
+		templateUrl: "/Tcc/views/usuario/registro.html",
 		controller: "ctrlUsuario"
 	})
 	.when("/senha", {
-		templateUrl: "/Tcc/login.html",
+		templateUrl: "/Tcc/views/usuario/login.html",
 		controller: "ctrlUsuario"
 	})
 	.when("/modalRevista", {
-		templateUrl: "/Tcc/turma.html",
+		templateUrl: "/Tcc/views/turma/turma.html",
 		controller: "ctrlTurma"
 	})
 	.when("/configuracao", {
-		templateUrl: "/Tcc/configuracao.html",
+		templateUrl: "/Tcc/views/usuario/configuracao.html",
 		controller: "ctrlUsuario"
 	})
 	.when("/home", {
-		templateUrl: "/Tcc/home.html",
+		templateUrl: "/Tcc/views/home/home.html",
 		controller: "ctrlTurma"
 	})
 	.otherwise({ redirectTo: "/login" });

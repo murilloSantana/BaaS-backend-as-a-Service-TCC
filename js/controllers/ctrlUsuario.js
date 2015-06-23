@@ -1,7 +1,8 @@
-app.controller('ctrlUsuario', function ($scope,servicesAPI,$window) {
+app.controller('ctrlUsuario', function ($scope,servicesAPI,$window,$timeout) {
 
 	$scope.contador;
 	$scope.cargos = ["Secretária","Superintendente","Pastor"]
+	
 	$scope.salvarUsuario = function(usuario){
 
 		if($scope.usuarios != null){
@@ -26,16 +27,24 @@ app.controller('ctrlUsuario', function ($scope,servicesAPI,$window) {
 				"cargo":usuario.cargo
 			}
 			servicesAPI.setUsuario(usuario).success(function (data) {
-				$window.alert("Usuário cadastrado com sucesso")
-				$scope.mudar = !$scope.mudar
-
-				$scope.usuario = []
-				$(window.document.location).attr('href',"/Tcc/index.html#/login"); 
-
-			});
+				$scope.sucessoUserSave = true;
+				$timeout(function() {
+					$scope.sucessoUserSave= false
+				}, 2000);
+				$timeout(function() {
+					$scope.mudar = !$scope.mudar
+					$scope.usuario = []
+					$(window.document.location).attr('href',"/Tcc/index.html#/login"); 
+				}, 1000);
+			}).error(function(data){
+				$scope.erroUserSave = true;
+				$timeout(function() {
+					$scope.erroUserSave= false
+				}, 3000);
+			});				
 		}
 	};
-	
+
 	$scope.logar = function(usuario){
 
 		var existe = false;
@@ -45,7 +54,11 @@ app.controller('ctrlUsuario', function ($scope,servicesAPI,$window) {
 		}
 		for(var i = 0; i < $scope.logados.length; i++){
 			if($scope.logados[i].ip == getIP() && $scope.logados[i].logado == true){
-				alert("Já existe um usuário logado neste computador!")
+				
+				$scope.erroUserLogadoTrue = true;
+				$timeout(function() {
+					$scope.erroUserLogadoTrue = false
+				}, 3000);
 				$window.location.reload();
 				existe = true;
 				break;
@@ -64,14 +77,17 @@ app.controller('ctrlUsuario', function ($scope,servicesAPI,$window) {
 				}
 				servicesAPI.setLogados(logados).success(function(){
 					$(window.document.location).attr('href',"/Tcc/index.html#/aluno"); 
+				})	
+			}).error(function(data){
+				$scope.erroUserLogado = true;
+				$timeout(function() {
+					$scope.erroUserLogado= false
+				}, 3000);
+			});		
 
-				});
-
-			});
-			
 		}
 	};
-	
+
 	$scope.carregarUsuarios = function(){
 		servicesAPI.getUsuario().success(function(response,data){
 			$scope.usuarios = response.data;
@@ -137,6 +153,8 @@ app.controller('ctrlUsuario', function ($scope,servicesAPI,$window) {
 
 	$scope.limpaForm = function(usuario){
 		$scope.usuario = []
+		$(window.document.location).attr('href',"/Tcc/index.html#/login"); 
+
 	}
 	$scope.trocar = function(usuario){
 		$scope.mudar = !$scope.mudar
@@ -145,7 +163,7 @@ app.controller('ctrlUsuario', function ($scope,servicesAPI,$window) {
 	$scope.edit = function(){
 		$(window.document.location).attr('href',"/Tcc/index.html#/configuracao"); 
 
-		
+
 	}
 
 
@@ -157,10 +175,21 @@ app.controller('ctrlUsuario', function ($scope,servicesAPI,$window) {
 			"cargo":$scope.user[0].usuariosLogados.cargo
 		}
 		servicesAPI.updateUsuario($scope.user[0].usuariosLogados.objectId, usuario).success(function(){
-			alert("Editado com sucesso")
-			$(window.document.location).attr('href',"/Tcc/index.html#/aluno"); 
-
+			
+			$scope.sucessoUserEdit = true;
+			$timeout(function() {
+				$scope.sucessoUserEdit= false
+			}, 2000);
+			$timeout(function() {
+				$(window.document.location).attr('href',"/Tcc/index.html#/aluno"); 
+			}, 1000);
+		}).error(function(data){
+			$scope.erroUserEdit = true;
+			$timeout(function() {
+				$scope.erroUserEdit= false
+			}, 3000);
 		});
+
 	}
 
 	$scope.cancelarConfig = function(){

@@ -3,17 +3,29 @@
     <div class="row ">
       <div class="col-sm-4 " >
         <a href="#professor"  role="button" ng-click="mudaBtn()" class="btn btn-primary btn-sm bt" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i>
-          adicionar novo professor</a>
+          Adicionar Novo Professor</a>
 
         </div>
       </div>
       <div id="professor" class="modal fade">
         <div class="modal-dialog modal-lg">
+          <div ng-show="sucessoProf" class="alert alert-success center-block" role="alert">
+            <strong> Cadastrado com sucesso!</strong><button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+          </div>
+          <div ng-show="erroProf" class="alert alert-success center-block" role="alert">
+            <strong>Erro!</strong> Não foi possivel inserir o professor<button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+          </div>
+          
+          <div ng-show="achouCep" class="alert alert-danger center-block" role="alert">
+            <strong>Erro!</strong> O CEP informado é inválido. <button type="button" class="close" data-dismiss="alert" aria-label="close">&times</button>
+          </div>
+          
+          
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
               ng-click="limpaForm()">&times</button>
-              <h4 class="modal-title">Formulário de cadastro de professor</h4>
+              <h4 class="modal-title">Cadastro De Professor</h4>
             </div>
             <div class="modal-body">
               <form name="professorForm" class="form-horizontal">
@@ -40,7 +52,7 @@
 
                 <div class=" col-sm-4">
                  <label  class="col-md-offset-5 control-label">CEP</label>
-                 <input type="text" name="cep" ng-model="professor.enderecoProf[0].cep" ng-blur="atualizaCep(professor.enderecoProf[0].cep)" class="form-control col-md-offset-5 " ng-minlength="8" maxlength="8" ng-required="true" placeholder="DDDDDDDD" ng-pattern="/^\d{8}$/"/>
+                 <input type="text" name="cep" ng-model="professor.enderecoProf.cep" ng-keyup="atualizaCep(professor.enderecoProf.cep)" class="form-control col-md-offset-5 " ng-minlength="8" maxlength="8" ng-required="true" placeholder="DDDDDDDD" ng-pattern="/^\d{8}$/" />
 
                  <div class="col-md-offset-5">
                    <span  ng-show="professorForm.cep.$error.required && !professorForm.cep.$pristine" class="alert-danger">
@@ -82,7 +94,7 @@
            <div class="form-group">
              <div class=" col-sm-4">
                <label  class=" col-md-offset-2 control-label">Telefone</label>
-               <input type="text" name="tel" ng-model="professor.telefone" class="form-control col-md-offset-2" ng-minlength="8"  ng-required="true" maxlength="9"placeholder="DDDD-DDDD ou DDDDD-DDDD"  ng-pattern="/^\d{4,5}-\d{4}$/"/>
+               <input type="text" name="tel" ng-model="professor.telefone" class="form-control col-md-offset-2" ng-minlength="8"  ng-required="true" maxlength="10"placeholder="DDDD-DDDD ou DDDDD-DDDD"  ng-pattern="/^\d{4,5}-\d{4}$/"/>
 
                <div class="col-md-offset-2">
                  <span  ng-show="professorForm.tel.$error.required && !professorForm.tel.$pristine"class="alert-danger "> 
@@ -108,7 +120,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm()">Cancelar</button>
-        <button type="button" class="btn btn-primary" ng-disabled="professorForm.$invalid" data-dismiss="modal" aria-hidden="true" ng-show="edita"ng-click="editarProfessor(professor)">Salvar Alterações</button>
+        <button type="button" class="btn btn-primary" ng-disabled="professorForm.$invalid" data-dismiss="modal" aria-hidden="true" ng-show="edita" ng-click="editarProfessor(professor)" >Salvar Alterações</button>
 
         <button type="button" class="btn btn-primary" ng-disabled="professorForm.$invalid" ng-show="salva" ng-click="saveProfessor(professor)" >Salvar</button>
       </div>

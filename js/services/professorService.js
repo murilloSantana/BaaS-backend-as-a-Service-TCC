@@ -41,9 +41,6 @@ app.factory("professoresAPI", function($http){
 				'Content-Type':'application/json'
 			}
 
-		}).error(function(data){
-			console.log(data);
-
 		});
 	}
 
@@ -72,12 +69,9 @@ app.factory("professoresAPI", function($http){
 				'Content-Type':'application/json'
 			}
 
-		}).error(function(data){
-			console.log(data);
-
 		});
 	}
-	
+
 
 	return {
 		setProfessor: _setProfessor,
