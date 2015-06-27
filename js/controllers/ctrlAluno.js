@@ -1,5 +1,5 @@
 
-app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$window,$timeout) {
+app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$window,$timeout,aulasAPI) {
 	$scope.currentPage = 1;
 	$scope.pageSize= 10;
 	$scope.alunos = [];
@@ -22,6 +22,12 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 		});
 	};
 
+	$scope.carregarAula = function(){
+		aulasAPI.getAula().success(function (response) {
+			$scope.aulas = response.data;
+
+		});
+	};
 	
 	$scope.excluirAluno = function(aluno){
 		servicesAPI.deleteEndereco(aluno.aluEndereco.objectId).success(function (response,data) {
@@ -145,7 +151,9 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 	$scope.mudaBtn = function(){
 		$scope.salva= true;
 		$scope.edita = false;
-		$scope.mudarTur = false;
+		$scope.mostraFrequencia = false;
+
+		// $scope.mudarTur = false;
 
 
 	}
@@ -160,16 +168,16 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 		$scope.enderecos.complemento = aluno.aluEndereco.complemento;
 		$scope.edita = true;
 		$scope.salva = false;
-		$scope.mudarTur = false;
-
+		// $scope.mudarTur = false;
+		$scope.mostraFrequencia = false;
 
 	}
 
-	$scope.editMudarTurma = function(){
-		$scope.mudarTur = true;
-		$scope.edita = false;
-		$scope.salva = false;
-	}
+	// $scope.editMudarTurma = function(){
+	// 	$scope.mudarTur = true;
+	// 	$scope.edita = false;
+	// 	$scope.salva = false;
+	// }
 
 	$scope.limpaForm = function(){
 		delete $scope.cep;
@@ -242,9 +250,11 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 	$scope.mudarTurma = function(aluno,turma){
 		var achado;
 		$scope.novo=[];
+		$scope.turmaAchada=[]
 		for (var i = 0; i < $scope.turmas.length; i++) {
 			for (var y = 0; y < $scope.turmas[i].aluTurma.length; y++) {
 				if($scope.turmas[i].aluTurma[y].objectId == aluno.objectId){
+					$scope.turmaAchada.push($scope.turmas[i])
 					$scope.cont = i;
 					$scope.contador = y;
 					achado = true;
@@ -266,16 +276,14 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 		for(var i=0;i<$scope.turmas.length;i++){
 
 			$scope.turmas[i].aluTurma.filter(function(elemento){
-				if(elemento.objectId != aluno.objectId){
+				if(elemento.objectId != aluno.objectId && $scope.turmas[i].objectId == $scope.turmaAchada[0].objectId ){
 
 					return $scope.novo.push(elemento)
 				}
 			})
 		}
-
-
-
-
+		console.log($scope.novo);
+		
 
 		turma={
 			"aluTurma":$scope.novo,
@@ -296,7 +304,7 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 		})
 
 		turmasAPI.updateTurma($scope.turmas[$scope.cont].objectId,turma).success(function(response,data){
-			
+
 			$scope.sucessoAluMudar = true;
 			$timeout(function() {
 				$scope.sucessoAluMudar= false
@@ -311,10 +319,77 @@ app.controller('ctrlAluno', function ($scope,alunosAPI,servicesAPI,turmasAPI,$wi
 			}, 3000);
 		});
 
+}
+
+
+$scope.frequencia = function(aluno){
+	$scope.aulasAlu=[]
+	$scope.aulasTurma=[]
+	$scope.alunosFalta=[]
+	$scope.mostraFrequencia = true;
+	$scope.edita = false;
+	$scope.salva = false;
+	$scope.aluno = aluno;
+	for(var j =0;j<$scope.turmas.length;j++){
+		for( var i =0; i<$scope.aulas.length;i++){
+			if($scope.aulas[i].codAluno == aluno.objectId ) {
+				$scope.aulasAlu.push($scope.aulas[i]);
+			}
+		}
+	}
+	for( var i =0; i<$scope.aulas.length;i++){
+		for( var y =0; y<$scope.turmas.length;y++){
+			for( var j =0; j<$scope.turmas[y].aluTurma.length;j++){
+
+				if($scope.aulas[i].codTurma.objectId == $scope.turmas[y].objectId && aluno.objectId == $scope.turmas[y].aluTurma[j].objectId) {
+					$scope.aulasTurma.push($scope.aulas[i]);
+				}
+			}
+		}
 	}
 
+		// for( var i =0; i<$scope.aulas.length;i++){
+		// 	for( var y =0; y<$scope.turmas.length;y++){
+		// 		for( var j =0; j<$scope.turmas[y].aluTurma.length;j++){
+
+		// 			if( aluno.objectId == $scope.aulas[i].codAluno && aluno.objectId == $scope.turmas[y].aluTurma[j].objectId) {
+		// 				$scope.alunosFalta.push($scope.aulas[i]);
+		// 			}
+		// 		}
+		// 	}
+		// }
+		$scope.turmaFalta=[]
+		for( var i =0; i<$scope.aulas.length;i++){
+			for( var y =0; y<$scope.turmas.length;y++){
+				for( var j =0; j<$scope.turmas[y].aluTurma.length;j++){
+
+					if( aluno.objectId != $scope.aulas[i].codAluno && aluno.objectId == $scope.turmas[y].aluTurma[j].objectId && $scope.turmas[y].objectId == $scope.aulas[i].codTurma.objectId) {
+						$scope.alunosFalta.push($scope.aulas[i]);
+						$scope.turmaFalta.push($scope.turmas[y]);
+					}
+				}
+			}
+		}
+		$scope.datasFalta=[]
+		var achou =0;
+		
+		for(var i =0;i<$scope.alunosFalta.length;i++){
+			for(var j =0;j<$scope.aulasAlu.length;j++){
+				if($scope.aulasAlu[j].data ==  $scope.alunosFalta[i].data){
+					achou++
+				}
+			}if(achou < 1){
+				$scope.datasFalta.push($scope.alunosFalta[i].data);
+			}
+			achou = 0
+		}
+
+		$scope.dadosAluno = {"gerais":{"data":$scope.datasFalta,"faltas": $scope.datasFalta.length  }}
+	}
 	$scope.carregarAluno();
 
 	$scope.carregarTurma();
+
+	$scope.carregarAula();
 
 });

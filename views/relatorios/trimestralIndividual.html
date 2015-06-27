@@ -1,0 +1,56 @@
+<div id="downloadsemana">
+    <div class="section ">
+        <div class="container">
+            <div class="row ">
+                <div class="">
+                    <div class="navbar  navbar-default navbar-static-top menucor layoutsemana">
+                        <div class="container">
+
+                            <a class="navbar-brand"><img class="hidden-xs hidden-sm "  height="80" alt="Responsive image" src="img/logo.jpg"></a>
+                            <h1 class="tituloprincial"> Escola Biblíca Dominícal</h1>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <h1 class="titulorelatorio">Relatório Trimestral</h1>
+
+
+    <div class="table-responsive tabelarelatoriosemanal"  >
+
+        <div class="col-md-10 ">
+            <table class="table table-bordered table-striped table-condensed table-hover">
+                <thead>
+                    <tr>
+
+                        <th>Matrículados</th>
+                        <th>Quantidade de Presenças</th>
+                        <th>Presença de Biblias</th>
+                        <th>Presença de Revistas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="tri in relatorioTrim " id="downloadsemana">
+                        <td>{{tri.matriculadosTriGeral}}</td>
+                        <td>{{tri.presencaTriindividual}}</td>                  
+                        <td>{{tri.bibliasTriPre}}</td>
+                        <td>{{tri.revistasTriPre}}</td>
+
+                    </tr>
+
+                    
+                </tbody>
+            </table>
+
+        </div>
+    </div></div>
+
+    <a href="" class="btn btn-info btn-xs botaoeditar" id="downlad"
+    ><i class="glyphicon glyphicon-edit"></i> Download</a>

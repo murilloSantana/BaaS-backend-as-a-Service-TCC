@@ -12,16 +12,16 @@
 
 
         <div class=" col-sm-offset-11">
-         <p> Alunos por página</p>
+           <p> Alunos por página</p>
 
-         <select   ng-model="pageSize"
-         ng-options="p for p in perPagePresets">
-     </select>
+           <select   ng-model="pageSize"
+           ng-options="p for p in perPagePresets">
+       </select>
 
- </div>
- <br>
- <alerta-Aluno></alerta-Aluno>
- <div class="table-responsive">
+   </div>
+   <br>
+   <alerta-Aluno></alerta-Aluno>
+   <div class="table-responsive">
     <div class="col-md-12 ">
         <table class="table table-bordered table-striped table-condensed table-hover">
             <thead>
@@ -46,6 +46,7 @@
                     <a href="#aluno" class="btn btn-info btn-xs edit" role="button" data-toggle="modal"
                     ng-click="edit(aluno)"><i class="glyphicon glyphicon-edit"></i> Editar</a>
                     <a href="#aluno" class="btn btn-danger btn-xs delete" ng-click="excluirAluno(aluno)"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    <a href="#aluno" class="btn btn-success btn-xs " role="button" data-toggle="modal"  ng-click="frequencia(aluno)"><i class="glyphicon glyphicon-calendar" ></i> Frequência</a>
                     <a href="#aluno" class="btn btn-warning btn-xs "   ng-click="mudarTurma(aluno)"><i class="glyphicon glyphicon-trash" ></i> Remover da Turma</a>
                 </td>
             </tr>
@@ -59,5 +60,4 @@
 </div>
 
 
-<div class="section section-primary rodape"></div>
-
+<rodapedirective></rodapedirective>

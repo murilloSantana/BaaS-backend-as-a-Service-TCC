@@ -25,10 +25,12 @@
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
               ng-click="limpaForm()">&times</button>
-              <h4 class="modal-title">Cadastro De Professor</h4>
+              <h4 class="modal-title" ng-show="salva">Cadastro De Professor</h4>
+              <h4 class="modal-title" ng-show="edita">Editar Professor</h4>
+              <h4 class="modal-title" ng-show="profs==true">Turmas Do Professor</h4>
             </div>
             <div class="modal-body">
-              <form name="professorForm" class="form-horizontal">
+              <form name="professorForm" class="form-horizontal" ng-show="salva == true || edita == true">
 
 
                <div class="form-group">
@@ -118,14 +120,35 @@
         </form>
 
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm()">Cancelar</button>
-        <button type="button" class="btn btn-primary" ng-disabled="professorForm.$invalid" data-dismiss="modal" aria-hidden="true" ng-show="edita" ng-click="editarProfessor(professor)" >Salvar Alterações</button>
+      <div class="table-responsive"  ng-show="profs==true">
+        <div class="col-md-4 ">
+          <table class="table table-bordered  table-condensed table-hover">
+            <thead>
+              <tr>
 
-        <button type="button" class="btn btn-primary" ng-disabled="professorForm.$invalid" ng-show="salva" ng-click="saveProfessor(professor)" >Salvar</button>
-      </div>
-    </div>
-  </div>
+                <th>Nome da Turma</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="p in profInTurma"  >
+               <td>{{p}}</td>
+             </tr>
+           </tbody>
+         </table>
+       </div>
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-show="!profs" ng-click="limpaForm()">Cancelar</button>
+       <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-show="profs"  ng-click="atualiza()">Cancelar</button>
+       <button type="button" class="btn btn-primary" ng-disabled="professorForm.$invalid" data-dismiss="modal" aria-hidden="true" ng-show="edita" ng-click="editarProfessor(professor)" >Salvar Alterações</button>
+
+       <button type="button" class="btn btn-primary" ng-disabled="professorForm.$invalid" ng-show="salva" ng-click="saveProfessor(professor)" >Salvar</button>
+       <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true" ng-click="atualiza()" ng-show="profs"  >OK</button>
+
+     </div>
+   </div>
+ </div>
 </div>
 </div>
 </div>

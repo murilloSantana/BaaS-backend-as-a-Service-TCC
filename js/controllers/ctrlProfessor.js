@@ -154,6 +154,7 @@ app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,services
 	$scope.mudaBtn = function(){
 		$scope.salva = true;
 		$scope.edita = false;
+		$scope.profs = false;
 
 
 	}
@@ -165,6 +166,8 @@ app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,services
 		$scope.professor.date = data;
 		$scope.edita = true;
 		$scope.salva = false;
+		$scope.profs = false;
+
 		$scope.enderecos = professor.enderecoProf;
 		$scope.enderecos.logradouro = professor.enderecoProf.rua;
 		$scope.enderecos.localidade = professor.enderecoProf.municipio;
@@ -247,7 +250,27 @@ app.controller('ctrlProfessor', function ($scope,professoresAPI,$window,services
 		$(window.document.location).attr('href',"/Tcc/index.html#/professor"); 
 	}
 
+	$scope.profInTurma=[]
+	$scope.profs = false;
 
+	$scope.turmasProf = function(professor){
+		for (var i = 0; i < $scope.professores.length; i++) {
+			for (var y = 0; y < $scope.professores[i].profTurma.length; y++) {
+
+				if($scope.professores[i].objectId == professor.objectId){
+					$scope.profInTurma.push($scope.professores[i].profTurma[y].nome)
+
+				}
+			}
+		};
+		$scope.profs = true;
+		$scope.edita = false;
+		$scope.salva = false;
+	}
+
+	$scope.atualiza = function(){
+		window.location.reload()
+	}
 	$scope.carregarTurma();
 	$scope.carregarProfessor();
 	$scope.carregarEnderecos();

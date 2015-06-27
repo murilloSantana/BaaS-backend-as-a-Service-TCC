@@ -125,45 +125,43 @@ app.controller('ctrlAula', function ($scope,alunosAPI,turmasAPI,aulasAPI,$window
 
 
 		}
-
-
 		$scope.dadosAula = function(aula,turma){
 			$scope.edita = false;
 			$scope.salva = false;
 			$scope.dados = true;
 			$scope.alunosChamados = [];
 			$scope.alu=[];
-			$scope.dadosAula=[];
+			$scope.dado=[]
 
 			$scope.aulas.filter(function(elemento) {
 				if(elemento.data == aula.data && $scope.turma.selecionado.objectId == elemento.codTurma.objectId ) return $scope.alunosChamados.push(elemento)
 			});
+			console.log($scope.alunosChamados);
+			// var achou = 0;
+			// for(var i = 0; i<$scope.alunos.length;i++){
+			// 	for(var y = 0; y< $scope.alunosChamados.length; y++){
 
-			$scope.alus=[]
-			obj = $scope.alunos[0].objectId
-			for(var i = 0; i<$scope.alunos.length;i++){
-				for(var y = 0; y< $scope.alunosChamados.length; y++){
+			// 		if($scope.dado.length == 0 && $scope.alunosChamados[y].codAluno == $scope.alunos[i].objectId  &&  $scope.turma.selecionado.objectId == aula.codTurma.objectId ){
+			// 			// obj= $scope.alunos[i].objectId
+			// 			$scope.dado.push($scope.alunos[i])
 
-					if($scope.alunosChamados[y].codAluno == $scope.alunos[i].objectId  &&  $scope.turma.selecionado.objectId == aula.codTurma.objectId ){
-						obj= $scope.alunos[i].objectId
-						if($scope.alus.length == 0){
-							$scope.alus.push($scope.alunos[i])
+			// 		}else{
+			// 			for(var j = 0; j< $scope.dado.length; j++){
 
-						}else{
-							for(var j = 0; j< $scope.alus.length; j++){
+			// 				if($scope.dado[j].objectId == $scope.alunos[i].objectId){
+			// 					achou++;
+			// 				}
+			// 			}
+			// 		}
+			// 	}if(achou < 1){
+			// 		$scope.dado.push($scope.alunos[i])
 
-								if($scope.alus[j].objectId != $scope.alunos[i].objectId){
-									$scope.alus.push($scope.alunos[i])
+			// 	}
+			// 	achou = 0;
+			// }
+			// console.log($scope.dado);
 
-								}
-							}
-						}
-					}else{
-						obj= $scope.alunos[i].objectId
-					}
 
-				}
-			}
 
 		}
 		$scope.limpaForm = function(){

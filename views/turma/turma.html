@@ -33,12 +33,12 @@
                         <th ng-show="turma.selecionada != null">Ano</th>
                         <th ng-show="turma.selecionada != null"></th>
                     </tr>
-                </thead>
+                </thead >
                 <tbody ng-repeat="tu in turma.selecionada.turmaTrimestre">
                     <tr dir-paginate="trimestre in trimestres | filter:busca | itemsPerPage: pageSize"
                     current-page="currentPage" pagination-id="turmaPagination"  ng-show="tu.objectId == trimestre.objectId">
                     <td></td>
-                    <td></td>
+                    <td>{{turma.selecionada.codigo}}</td>
                     <td>{{trimestre.triRev.categoria}} <a href="#turma" class="info"  role="button" data-toggle="modal" ng-click="mostrarRevista()" ng-show="trimestre.triRev != null"><i class="glyphicon glyphicon-modal-window"></i><span>Ao clicar no botão, carregará todos os dados da respectiva revista  </span></a></td>
                     <td>{{tu.created | date:"dd/MM/yyyy"}}</td>
 
@@ -62,5 +62,4 @@
 
 </div>
 </div>
-<div class="section section-primary rodape"></div>                        
-
+<rodapedirective></rodapedirective>

@@ -1,4 +1,4 @@
-app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,alunosAPI,revistasAPI,trimestresAPI,aulasAPI,$timeout) {
+app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,alunosAPI,revistasAPI,trimestresAPI,aulasAPI,$timeout,servicesAPI) {
 	$scope.currentPage = 1;
 	$scope.pageSize = 10;
 	var turmas = [];
@@ -11,6 +11,27 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 	$scope.carregarAula = function(){
 		aulasAPI.getAula().success(function (response) {
 			$scope.aulas = response.data;
+
+		});
+	}
+	$scope.carregarRelatorioSemanal = function(){
+		servicesAPI.getRelatorioSemanal().success(function (response) {
+			$scope.relatorioSemanal = response.data;
+
+
+		});
+	}
+	$scope.carregarRelatorioAnual= function(){
+		servicesAPI.getRelatorioAnual().success(function (response) {
+			$scope.relatorioAnual = response.data;
+
+
+		});
+	}
+	$scope.carregarRelatorioTrimestral = function(){
+		servicesAPI.getRelatorioTrimestral().success(function (response) {
+			$scope.relatorioTrim = response.data;
+
 
 		});
 	}
@@ -99,6 +120,7 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			"triRev":
 			{
 				"___class":"Revistas",
+				"nome":$scope.revista.nome,
 				"categoria":$scope.revista.categoria,
 				"tema":$scope.revista.tema,
 
@@ -425,7 +447,7 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			data2.setFullYear(data2.getFullYear()+total);
 
 			var diferenca = Math.trunc((data2.getTime()-data.getTime())/(1000*60*60*24));
-			if(diferenca <= 0 && diferenca > -8) return elemento;
+			if(diferenca < 1 && diferenca > -8) return elemento;
 		});
 
 		$scope.quantidade = $scope.aniversario.length
@@ -434,21 +456,26 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 	$scope.contains = function (aulas) {
 
 		$scope.datas=[];
-
-		$scope.datas.push($scope.aulas[0]);
-		obj = $scope.aulas[0].data;
+		var verdadeiro = 0
 		for(var i = 0; i < $scope.aulas.length; i++){
-			if($scope.aulas[i].data == obj ){
-				obj = $scope.aulas[i].data;
+			if($scope.datas.length == 0 ){
+				$scope.datas.push($scope.aulas[i]);			
 			}else{
-				obj = $scope.aulas[i].data;
+				for(var j = 0; j < $scope.datas.length; j++){
+					if($scope.datas[j].data == $scope.aulas[i].data){
+						verdadeiro ++
+					}
+				}
+				
 
-				$scope.datas.push($scope.aulas[i]);
-
+				if(verdadeiro < 1){
+					$scope.datas.push($scope.aulas[i]);
+				}
+				verdadeiro =0;
 			}
 		}
-
 	}
+
 
 	$scope.gerarRelatorio = function(aul,trimestreEscolhido){
 		$scope.nova=[]
@@ -462,15 +489,15 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			$scope.relatorioTrimestral();
 		}
 	}
-	
+
 	$scope.relatorioTrimestral = function(){
 		$scope.trimestres=[];
-
+		$scope.matriculadosTrimestre=[]
 		$scope.revistasPresentesTri=[]		
 		$scope.bibliasPresentesTri=[]
 		$scope.presentesTri=[]
 		if($scope.relTrimestre.select == "1º Trimestre"){
-			
+
 			$scope.aulas.filter(function(elemento){
 				var dataAula = new Date(elemento.data);
 				var mes = dataAula.getMonth();
@@ -491,11 +518,11 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			});
 
 
-			$scope.matriculadosTri = $scope.alunos.filter(function(elemento){
-				var dataMatricula = new Date(elemento.created);
-				var mes = dataMatricula.getMonth();
-				
-				if( mes  < 4) return elemento
+
+			$scope.alunos.filter(function(elemento){
+				var dataA = new Date();
+				var dataAtual = new Date("April 01,"+ dataA.getFullYear());
+				if( elemento.created < dataAtual.getTime()  && elemento.selecionado == true ) return $scope.matriculadosTrimestre.push(elemento)
 			})
 
 			for(var i = 0; i<$scope.aulas.length;i++){
@@ -510,7 +537,7 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			}
 
 			$scope.trimestres={"total":{"revistasPresentesTri":$scope.revistasPresentesTri.length,"bibliasPresentesTri":$scope.bibliasPresentesTri.length,
-			"presencaTri":$scope.presentesTri.length,"matriculadosTri":$scope.matriculadosTri.length}};
+			"presencaTri":$scope.presentesTri.length,"matriculadosTri":$scope.matriculadosTrimestre.length}};
 			$scope.mostraTrimestre = true;
 
 		}else if($scope.relTrimestre.select == "2º Trimestre"){
@@ -534,11 +561,14 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			});
 
 
-			$scope.matriculadosTri = $scope.alunos.filter(function(elemento){
-				var dataMatricula = new Date(elemento.created);
-				var mes = dataMatricula.getMonth();
-				if( mes < 7 && mes > 3 ) return elemento
+			$scope.matriculadosTrimestre =[]
+			$scope.alunos.filter(function(elemento){
+				var dataA = new Date();
+				var dataFim = new Date("July 01,"+ dataA.getFullYear());
+
+				if(  elemento.created < dataFim.getTime() && elemento.selecionado == true ) return $scope.matriculadosTrimestre.push(elemento)
 			})
+			console.log($scope.matriculadosTrimestre);
 
 			for(var i = 0; i<$scope.aulas.length;i++){
 				var dataAula = new Date($scope.aulas[i].data);
@@ -552,7 +582,7 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			}
 
 			$scope.trimestres={"total":{"revistasPresentesTri":$scope.revistasPresentesTri.length,"bibliasPresentesTri":$scope.bibliasPresentesTri.length,
-			"presencaTri":$scope.presentesTri.length,"matriculadosTri":$scope.matriculadosTri.length}};
+			"presencaTri":$scope.presentesTri.length,"matriculadosTri":$scope.matriculadosTrimestre.length}};
 			$scope.mostraTrimestre = true;
 
 		}else if($scope.relTrimestre.select == "3º Trimestre"){
@@ -576,10 +606,11 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			});
 
 
-			$scope.matriculadosTri = $scope.alunos.filter(function(elemento){
-				var dataMatricula = new Date(elemento.created);
-				var mes = dataMatricula.getMonth();
-				if( mes < 10 && mes > 6  ) return elemento
+			$scope.alunos.filter(function(elemento){
+				var dataA = new Date();
+				var dataFim = new Date("October 01,"+ dataA.getFullYear());
+
+				if(  elemento.created < dataFim.getTime() && elemento.selecionado == true ) return $scope.matriculadosTrimestre.push(elemento)
 			})
 
 			for(var i = 0; i<$scope.aulas.length;i++){
@@ -594,7 +625,7 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			}
 
 			$scope.trimestres={"total":{"revistasPresentesTri":$scope.revistasPresentesTri.length,"bibliasPresentesTri":$scope.bibliasPresentesTri.length,
-			"presencaTri":$scope.presentesTri.length,"matriculadosTri":$scope.matriculadosTri.length}};
+			"presencaTri":$scope.presentesTri.length,"matriculadosTri":$scope.matriculadosTrimestre.length}};
 			$scope.mostraTrimestre = true;
 		}else if($scope.relTrimestre.select == "4º Trimestre"){
 			$scope.aulas.filter(function(elemento){
@@ -617,10 +648,12 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			});
 
 
-			$scope.matriculadosTri = $scope.alunos.filter(function(elemento){
-				var dataMatricula = new Date(elemento.created);
-				var mes = dataMatricula.getMonth();
-				if( mes > 9  ) return elemento
+
+			$scope.alunos.filter(function(elemento){
+				var dataA = new Date();
+				var dataFim = new Date("December 31,"+ dataA.getFullYear());
+
+				if(  elemento.created < dataFim.getTime() && elemento.selecionado == true ) return$scope.matriculadosTrimestre.push(elemento)
 			})
 
 			for(var i = 0; i<$scope.aulas.length;i++){
@@ -635,7 +668,7 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			}
 
 			$scope.trimestres={"total":{"revistasPresentesTri":$scope.revistasPresentesTri.length,"bibliasPresentesTri":$scope.bibliasPresentesTri.length,
-			"presencaTri":$scope.presentesTri.length,"matriculadosTri":$scope.matriculadosTri.length}};
+			"presencaTri":$scope.presentesTri.length,"matriculadosTri":$scope.matriculadosTrimestre.length}};
 			$scope.mostraTrimestre = true;
 		}
 	}
@@ -648,8 +681,9 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 		$scope.revistasPreTriInd=[]		
 		$scope.bibliasPreTriInd=[]
 		$scope.presentesTriInd=[]
+
 		if($scope.relTrimestre.select == "1º Trimestre"){
-			
+
 			$scope.aulas.filter(function(elemento){
 				var dataAula = new Date(elemento.data);
 				var mes = dataAula.getMonth();
@@ -666,17 +700,14 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 				var dataAtual = new Date();
 				var anoAtual = dataAtual.getFullYear();
 				var anoAula = dataAula.getFullYear();
-				if(elemento.revista == "presente" && mes < 4 && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId)	return $scope.revistasPreTriInd.push(elemento)
+				if(elemento.revista == "presente" && mes < 4 && anoAtual == anoAula )	return $scope.revistasPreTriInd.push(elemento)
 			});
 
-
-			$scope.matriculadosTri = $scope.alunos.filter(function(elemento){
-				var dataMatricula = new Date(elemento.created);
-				var mes = dataMatricula.getMonth();
-				
-				if( mes  < 4 ) return elemento
+			$scope.alunos.filter(function(elemento){
+				var dataA = new Date();
+				var dataAtual = new Date("April 01,"+ dataA.getFullYear());
+				if( elemento.created < dataAtual.getTime()  && elemento.selecionado == true && $scope.turma.select.aluTurma[i].objectId == elemento.objectId) return  $scope.matriculadosTri.push(elemento)
 			})
-
 			for(var i = 0; i<$scope.aulas.length;i++){
 				var dataAula = new Date($scope.aulas[i].data);
 				var mes = dataAula.getMonth();
@@ -688,7 +719,7 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 				}
 			}
 
-			$scope.trimestres={"total":{"revistasPresentesTri":$scope.revistasPresentesTri.length,"bibliasPresentesTri":$scope.bibliasPreTriInd.length,
+			$scope.trimestresInd={"total":{"revistasPresentesTri":$scope.revistasPresentesTri.length,"bibliasPresentesTri":$scope.bibliasPreTriInd.length,
 			"presencaTri":$scope.presentesTriInd.length,"matriculadosTri":$scope.matriculadosTri.length}};
 			$scope.mostraTrimestre = true;
 
@@ -702,7 +733,7 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 				if(elemento.biblia == "presente" && mes < 7 && mes > 3 && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId)	return $scope.bibliasPreTriInd.push(elemento)
 			});
 
-
+			$scope.matriculadosTri=[]
 			$scope.aulas.filter(function(elemento){
 				var dataAula = new Date(elemento.data);
 				var mes = dataAula.getMonth();
@@ -713,226 +744,317 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 			});
 
 
-			$scope.matriculadosTri = $scope.alunos.filter(function(elemento){
-				var dataMatricula = new Date(elemento.created);
-				var mes = dataMatricula.getMonth();
-				if( mes < 7 && mes > 3 ) return elemento
-			})
+			for(var i = 0; i < $scope.alunos.length;i++){
+				var dataA = new Date();
+				var dataFim = new Date("July 01,"+ dataA.getFullYear());
+				for (var j = 0; j <$scope.turma.select.aluTurma.length; j++) {
+					if(  $scope.alunos[i].created < dataFim.getTime() && $scope.alunos[i].selecionado == true  ){
+						if($scope.turma.select.aluTurma[j].objectId == $scope.alunos[i].objectId){
+							$scope.matriculadosTri.push($scope.alunos[i])
 
-			for(var i = 0; i<$scope.aulas.length;i++){
-				var dataAula = new Date($scope.aulas[i].data);
-				var mes = dataAula.getMonth();
-				var dataAtual = new Date();
-				var anoAtual = dataAtual.getFullYear();
-				var anoAula = dataAula.getFullYear();
-				if(mes < 7 && mes > 3 && anoAtual == anoAula && $scope.turma.select.objectId == $scope.aulas[i].codTurma.objectId ){
-					$scope.presentesTriInd.push($scope.aulas[i])
-				}
-			}
+						}
+					}
+				};
 
-			$scope.trimestres={"total":{"revistasPresentesTri":$scope.revistasPreTriInd.length,"bibliasPresentesTri":$scope.bibliasPreTriInd.length,
-			"presencaTri":$scope.presentesTriInd.length,"matriculadosTri":$scope.matriculadosTri.length}};
-			$scope.mostraTrimestre = true;
+			}				
+			$scope.triProf=[]
 
-		}else if($scope.relTrimestre.select == "3º Trimestre"){
-			$scope.aulas.filter(function(elemento){
-				var dataAula = new Date(elemento.data);
-				var mes = dataAula.getMonth();
-				var dataAtual = new Date();
-				var anoAtual = dataAtual.getFullYear();
-				var anoAula = dataAula.getFullYear();
-				if(elemento.biblia == "presente" && mes < 10 && mes > 6 && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId)	return $scope.bibliasPreTriInd.push(elemento)
-			});
+			$scope.professorTrimestral=[]
+			var profAchado = false
+			
+			// $scope.aulas.filter(function(elemento) {
+			// 	if($scope.professorTrimestral.length == 0){
+			// 		$scope.professorTrimestral.push(elemento.professor);
+			// 	}else{
+			// 		for (var i = 0; i < $scope.professorTrimestral.length; i++) {
+			// 			if(elemento.professor == $scope.professorTrimestral[i]){
+			// 				profAchado=true
 
+			// 			};
+			// 		}
+			// 	}if(profAchado == false){
+			// 		$scope.professorTrimestral.push(elemento.professor)
+			// 	}
+			// 	profAchado = false;
+			// });
 
-			$scope.aulas.filter(function(elemento){
-				var dataAula = new Date(elemento.data);
-				var mes = dataAula.getMonth();
-				var dataAtual = new Date();
-				var anoAtual = dataAtual.getFullYear();
-				var anoAula = dataAula.getFullYear();
-				if(elemento.revista == "presente" && mes < 10 && mes > 6 && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId)	return $scope.revistasPreTriInd.push(elemento)
-			});
+for (var j = 0; j < $scope.aulas.length; j++) {
+	if($scope.professorTrimestral.length == 0){
+		$scope.professorTrimestral.push($scope.aulas[j].professor);
+	}else{
+		for (var i = 0; i < $scope.professorTrimestral.length; i++) {
+			if($scope.aulas[j].professor == $scope.professorTrimestral[i]){
+				profAchado=true
 
+			};
+		}
+		if(profAchado == false){
+			$scope.professorTrimestral.push($scope.aulas[j].professor)
+		}
+	}
+	profAchado = false;
 
-			$scope.matriculadosTri = $scope.alunos.filter(function(elemento){
-				var dataMatricula = new Date(elemento.created);
-				var mes = dataMatricula.getMonth();
-				if( mes < 10 && mes > 6  ) return elemento
-			})
+};
 
-			for(var i = 0; i<$scope.aulas.length;i++){
-				var dataAula = new Date($scope.aulas[i].data);
-				var mes = dataAula.getMonth();
-				var dataAtual = new Date();
-				var anoAtual = dataAtual.getFullYear();
-				var anoAula = dataAula.getFullYear();
-				if(mes < 10 && mes > 6  && anoAtual == anoAula && $scope.turma.select.objectId == $scope.aulas[i].codTurma.objectId ){
-					$scope.presentesTriInd.push($scope.aulas[i])
-				}
-			}
+for(var i = 0; i<$scope.aulas.length;i++){
+	var dataAula = new Date($scope.aulas[i].data);
+	var mes = dataAula.getMonth();
+	var dataAtual = new Date();
+	var anoAtual = dataAtual.getFullYear();
+	var anoAula = dataAula.getFullYear();
+	if(mes < 7 && mes > 3 && anoAtual == anoAula &&  $scope.turma.select.objectId == $scope.aulas[i].codTurma.objectId ){
+		$scope.presentesTriInd.push($scope.aulas[i])
+	}
+}
 
-			$scope.trimestres={"total":{"revistasPresentesTri":$scope.revistasPreTriInd.length,"bibliasPresentesTri":$scope.bibliasPreTriInd.length,
-			"presencaTri":$scope.presentesTriInd.length,"matriculadosTri":$scope.matriculadosTri.length}};
-			$scope.mostraTrimestre = true;
-		}else if($scope.relTrimestre.select == "4º Trimestre"){
-			$scope.aulas.filter(function(elemento){
-				var dataAula = new Date(elemento.data);
-				var mes = dataAula.getMonth();
-				var dataAtual = new Date();
-				var anoAtual = dataAtual.getFullYear();
-				var anoAula = dataAula.getFullYear();
-				if(elemento.biblia == "presente" && mes > 9 && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId)	return $scope.bibliasPreTriInd.push(elemento)
-			});
+$scope.trimestresInd={"total":{"revistasPresentesTri":$scope.revistasPreTriInd.length,"bibliasPresentesTri":$scope.bibliasPreTriInd.length,
+"presencaTri":$scope.presentesTriInd.length,"matriculadosTri":$scope.matriculadosTri.length,"profTrimestral":$scope.professorTrimestral}};
+$scope.mostraTrimestre = true;
 
-
-			$scope.aulas.filter(function(elemento){
-				var dataAula = new Date(elemento.data);
-				var mes = dataAula.getMonth();
-				var dataAtual = new Date();
-				var anoAtual = dataAtual.getFullYear();
-				var anoAula = dataAula.getFullYear();
-				if(elemento.revista == "presente" && mes > 9 && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId )	return $scope.revistasPreTriInd.push(elemento)
-			});
+}else if($scope.relTrimestre.select == "3º Trimestre"){
+	$scope.aulas.filter(function(elemento){
+		var dataAula = new Date(elemento.data);
+		var mes = dataAula.getMonth();
+		var dataAtual = new Date();
+		var anoAtual = dataAtual.getFullYear();
+		var anoAula = dataAula.getFullYear();
+		if(elemento.biblia == "presente" && mes < 10 && mes > 6 && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId)	return $scope.bibliasPreTriInd.push(elemento)
+	});
 
 
-			$scope.matriculadosTri = $scope.alunos.filter(function(elemento){
-				var dataMatricula = new Date(elemento.created);
-				var mes = dataMatricula.getMonth();
-				if( mes > 9  ) return elemento
-			})
+	$scope.aulas.filter(function(elemento){
+		var dataAula = new Date(elemento.data);
+		var mes = dataAula.getMonth();
+		var dataAtual = new Date();
+		var anoAtual = dataAtual.getFullYear();
+		var anoAula = dataAula.getFullYear();
+		if(elemento.revista == "presente" && mes < 10 && mes > 6 && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId)	return $scope.revistasPreTriInd.push(elemento)
+	});
 
-			for(var i = 0; i<$scope.aulas.length;i++){
-				var dataAula = new Date($scope.aulas[i].data);
-				var mes = dataAula.getMonth();
-				var dataAtual = new Date();
-				var anoAtual = dataAtual.getFullYear();
-				var anoAula = dataAula.getFullYear();
-				if(mes > 9  && anoAtual == anoAula && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId){
-					$scope.presentesTriInd.push($scope.aulas[i])
-				}
-			}
 
-			$scope.trimestres={"total":{"revistasPresentesTri":$scope.revistasPreTriInd.length,"bibliasPresentesTri":$scope.bibliasPreTriInd.length,
-			"presencaTri":$scope.presentesTriInd.length,"matriculadosTri":$scope.matriculadosTri.length}};
-			$scope.mostraTrimestre = true;
+	$scope.matriculadosTri = $scope.alunos.filter(function(elemento){
+		var dataA = new Date();
+		var dataFim = new Date("October 01,"+ dataA.getFullYear());
+
+		if(  elemento.created < dataFim.getTime() && elemento.selecionado == true ) return elemento
+	})
+
+	for(var i = 0; i<$scope.aulas.length;i++){
+		var dataAula = new Date($scope.aulas[i].data);
+		var mes = dataAula.getMonth();
+		var dataAtual = new Date();
+		var anoAtual = dataAtual.getFullYear();
+		var anoAula = dataAula.getFullYear();
+		if(mes < 10 && mes > 6  && anoAtual == anoAula && $scope.turma.select.objectId == $scope.aulas[i].codTurma.objectId ){
+			$scope.presentesTriInd.push($scope.aulas[i])
 		}
 	}
 
-	$scope.getAno = function(){
-		$scope.anoRelatorio=[]
-		var achou = 0;
-		var aux;
-		for(var i = 0; i< $scope.aulas.length;i++){
-			
+	$scope.trimestresInd={"total":{"revistasPresentesTri":$scope.revistasPreTriInd.length,"bibliasPresentesTri":$scope.bibliasPreTriInd.length,
+	"presencaTri":$scope.presentesTriInd.length,"matriculadosTri":$scope.matriculadosTri.length}}
+	$scope.mostraTrimestre = true;
+}else if($scope.relTrimestre.select == "4º Trimestre"){
+	$scope.aulas.filter(function(elemento){
+		var dataAula = new Date(elemento.data);
+		var mes = dataAula.getMonth();
+		var dataAtual = new Date();
+		var anoAtual = dataAtual.getFullYear();
+		var anoAula = dataAula.getFullYear();
+		if(elemento.biblia == "presente" && mes > 9 && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId)	return $scope.bibliasPreTriInd.push(elemento)
+	});
 
+
+	$scope.aulas.filter(function(elemento){
+		var dataAula = new Date(elemento.data);
+		var mes = dataAula.getMonth();
+		var dataAtual = new Date();
+		var anoAtual = dataAtual.getFullYear();
+		var anoAula = dataAula.getFullYear();
+		if(elemento.revista == "presente" && mes > 9 && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId )	return $scope.revistasPreTriInd.push(elemento)
+	});
+
+
+	$scope.matriculadosTri = $scope.alunos.filter(function(elemento){
+		var dataA = new Date();
+		var dataFim = new Date("December 31,"+ dataA.getFullYear());
+
+		if(  elemento.creadte < dataFim.getTime() && elemento.selecionado == true ) return elemento
+	})
+
+
+
+	for(var i = 0; i<$scope.aulas.length;i++){
+		var dataAula = new Date($scope.aulas[i].data);
+		var mes = dataAula.getMonth();
+		var dataAtual = new Date();
+		var anoAtual = dataAtual.getFullYear();
+		var anoAula = dataAula.getFullYear();
+		if(mes > 9  && anoAtual == anoAula && anoAtual == anoAula && $scope.turma.select.objectId == elemento.codTurma.objectId){
+			$scope.presentesTriInd.push($scope.aulas[i])
+		}
+	}
+
+	$scope.trimestresInd={"total":{"revistasPresentesTri":$scope.revistasPreTriInd.length,"bibliasPresentesTri":$scope.bibliasPreTriInd.length,
+	"presencaTri":$scope.presentesTriInd.length,"matriculadosTri":$scope.matriculadosTri.length}};
+	$scope.mostraTrimestre = true;
+
+}
+}
+
+$scope.getAno = function(){
+	$scope.anoRelatorio=[]
+	var achou = 0;
+	var aux;
+	for(var i = 0; i< $scope.aulas.length;i++){
+
+
+		var dataAula = new Date($scope.aulas[i].data);
+		var anoAula = dataAula.getFullYear();
+		var mesAula = dataAula.getMonth();
+
+		if($scope.anoRelatorio.length == 0){
+
+			$scope.anoRelatorio.push(anoAula)
+		}else{
+			for(var y =0; y < $scope.anoRelatorio.length;y++){
+				if($scope.anoRelatorio[y] == anoAula){
+					achou++
+				}
+			}
+			if(achou < 1){
+				$scope.anoRelatorio.push(anoAula)
+			}
+		}
+		achou = 0;
+	}
+
+	var j = 0
+
+	while(j < $scope.anoRelatorio.length ){
+		if($scope.anoRelatorio[j] > $scope.anoRelatorio[j+1]){
+			aux = $scope.anoRelatorio[j]
+			$scope.anoRelatorio[j] = $scope.anoRelatorio[j+1]
+			$scope.anoRelatorio[j+1] = aux
+			j = 0;
+		}else{
+			j++
+		}
+	}
+}
+
+$scope.relatorioAnual = function(){
+	$scope.bibliaPreAnual=[];
+	$scope.anual=[];
+	$scope.revistaPreAnual=[];
+	$scope.presentesAnual=[];
+	$scope.matriculadosAnual=[];
+	var data = new Date();
+
+	var ano = data.getFullYear(); 
+	var mes = data.getMonth();
+	if(ano < $scope.relAnual.select || (ano == $scope.relAnual.select && mes == 12)){
+		$scope.aulas.filter(function(elemento){
+			var data = new Date(elemento.data);
+			var ano = data.getFullYear(); 
+			var mes = data.getMonth();
+			if(elemento.biblia == "presentes" && ano == $scope.relAnual.select ){
+
+				return $scope.bibliaPreAnual.push(elemento);
+			}
+		});
+
+		$scope.aulas.filter(function(elemento){
+			var data = new Date(elemento.data);
+			var ano = data.getFullYear(); 
+			var mes = data.getMonth();
+			if(elemento.revista == "presentes" && ano == $scope.relAnual.select ){
+
+				return $scope.revistaPreAnual.push(elemento);
+			}
+		});
+
+		for(var i = 0; i<$scope.aulas.length;i++){
 			var dataAula = new Date($scope.aulas[i].data);
 			var anoAula = dataAula.getFullYear();
-			var mesAula = dataAula.getMonth();
-
-			if($scope.anoRelatorio.length == 0){
-				
-				$scope.anoRelatorio.push(anoAula)
-			}else{
-				for(var y =0; y < $scope.anoRelatorio.length;y++){
-					if($scope.anoRelatorio[y] == anoAula){
-						achou++
-					}
-				}
-				if(achou < 1){
-					$scope.anoRelatorio.push(anoAula)
-				}
-			}
-			achou = 0;
-		}
-
-		var j = 0
-		
-		while(j < $scope.anoRelatorio.length ){
-			if($scope.anoRelatorio[j] > $scope.anoRelatorio[j+1]){
-				aux = $scope.anoRelatorio[j]
-				$scope.anoRelatorio[j] = $scope.anoRelatorio[j+1]
-				$scope.anoRelatorio[j+1] = aux
-				j = 0;
-			}else{
-				j++
+			if($scope.relAnual.select == anoAula){
+				$scope.presentesAnual.push($scope.aulas[i])
 			}
 		}
-	}
 
-	$scope.relatorioAnual = function(){
-		$scope.bibliaPreAnual=[];
-		$scope.anualIndividual=[];
-		$scope.revistaPreAnual=[];
-		// if(ano < $scope.relAnual.select || (ano == $scope.relAnual.select && mes == 12)){
-			$scope.aulas.filter(function(elemento){
-				var data = new Date(elemento.data);
-				var ano = data.getFullYear(); 
-				var mes = data.getMonth();
-				if(elemento.biblia == "presentes" && ano == $scope.relAnual.select ){
-
-					return $scope.bibliaPreAnual.push(elemento);
-				}
-			});
-
-			$scope.aulas.filter(function(elemento){
-				var data = new Date(elemento.data);
-				var ano = data.getFullYear(); 
-				var mes = data.getMonth();
-				if(elemento.revista == "presentes" && ano == $scope.relAnual.select ){
-
-					return $scope.revistaPreAnual.push(elemento);
-				}
-			});
-
-			$scope.anualIndividual={"total":{"bibliaPreAnual":$scope.bibliaPreAnual.length,"revistaPreAnual":$scope.revistaPreAnual.length}};
-
-		// }
-
+		$scope.alunos.filter(function(elemento){
+			var dataMatriculados = new Date(elemento.created);
+			var anoMatriculados = dataMatriculados.getFullYear();
+			var data = new Date($scope.relAnual.select);
+			if( elemento.selecionado == true && anoMatriculados <= data ) return $scope.matriculadosAnual.push(elemento)
+		})
+		$scope.anual={"total":{"matriculadosAnual":$scope.matriculadosAnual.length,"presentesAnual":$scope.presentesAnual.length,"bibliaPreAnual":$scope.bibliaPreAnual.length,"revistaPreAnual":$scope.revistaPreAnual.length}};
 		$scope.mostraAnual = true;
+
+	}else{
+		alert("Fora do periodo para gerar relatório anual")
 	}
-	$scope.relatorioIndividual = function(){
-		var achou = 0
-		$scope.presencaindividual=[]
-		$scope.matriculadosIndividual=[]
-		$scope.bibliaPindividual=[]
-		$scope.profindividual=[]
-		$scope.bibliaPindividual = $scope.aulas.filter(function(elemento){
-			if(elemento.biblia == "presente" && elemento.codTurma.objectId == $scope.turma.select.objectId && elemento.data == $scope.aul.dataSelecionada.data)	
-				return elemento
-		})
 
-		$scope.revistaPindividual = $scope.aulas.filter(function(elemento){
-			if(elemento.revista == "presente" && elemento.codTurma.objectId == $scope.turma.select.objectId && elemento.data == $scope.aul.dataSelecionada.data)	
-				return elemento
-		})
+}
 
-		for(var y = 0; y<$scope.alunos.length;y++){
+$scope.relatorioAnualIndividual = function(){
 
-			$scope.aulas.filter(function(elemento){
-				if(elemento.codTurma.objectId == $scope.turma.select.objectId && elemento.data == $scope.aul.dataSelecionada.data && elemento.codAluno == $scope.alunos[y].objectId)	
-					return $scope.presencaindividual.push($scope.alunos[y])
-			})
+	$scope.bibliaAnualInd=[];
+	$scope.anualIndividual=[];
+	$scope.revistaPreAnual=[];
+	$scope.presentesAnual=[];
+	$scope.matriculadosIndAnual=[];
+	var data = new Date();
+
+	var ano = data.getFullYear(); 
+	var mes = data.getMonth();
+	if(ano < $scope.relAnual.select || (ano == $scope.relAnual.select && mes == 12)){			$scope.aulas.filter(function(elemento){
+		var data = new Date(elemento.data);
+		var ano = data.getFullYear(); 
+		var mes = data.getMonth();
+		if(elemento.biblia == "presentes" && ano == $scope.relAnual.select && $scope.turma.select.objectId == elemento.codTurma.objectId){
+
+			return $scope.bibliaPreAnual.push(elemento);
 		}
+	});
 
+		$scope.aulas.filter(function(elemento){
+			var data = new Date(elemento.data);
+			var ano = data.getFullYear(); 
+			var mes = data.getMonth();
+			if(elemento.revista == "presentes" && ano == $scope.relAnual.select && $scope.turma.select.objectId == elemento.codTurma.objectId){
+
+				return $scope.revistaPreAnual.push(elemento);
+			}
+		});
+
+		for(var i = 0; i<$scope.aulas.length;i++){
+			var dataAula = new Date($scope.aulas[i].data);
+			var anoAula = dataAula.getFullYear();
+			if($scope.relAnual.select == anoAula && $scope.turma.select.objectId == $scope.aulas[i].codTurma.objectId){
+				$scope.presentesAnual.push($scope.aulas[i])
+			}
+		}
 
 		for(var i =0;i<$scope.alunos.length;i++){
-
+			var dataAluno = new Date($scope.alunos[i].created);
+			var anoAluno = dataAluno.getFullYear();
+			var dataAno = new Date();
+			var ano = dataAno.getFullYear();
 			$scope.aulas.filter(function(elemento){
-				var dataMatriculados = new Date($scope.alunos[i].created);
-				var data = new Date($scope.aul.dataSelecionada.data);
-				if($scope.alunos[i].objectId == elemento.codAluno && dataMatriculados < data && $scope.turma.select.objectId == elemento.codTurma.objectId && $scope.matriculadosIndividual.length==0 && $scope.aul.dataSelecionada.data == elemento.data){
-					$scope.matriculadosIndividual.push($scope.alunos[i])
+
+				if(anoAluno <= ano && $scope.alunos[i].selecionado == true && $scope.alunos[i].objectId == elemento.codAluno &&  $scope.turma.select.objectId == elemento.codTurma.objectId && $scope.matriculadosIndAnual.length==0){
+					$scope.matriculadosIndAnual.push($scope.alunos[i])
 				}
-				else if($scope.alunos[i].objectId == elemento.codAluno && $scope.matriculadosIndividual.length > 0 && $scope.matriculadosIndividual.length < $scope.alunos.length && $scope.turma.select.objectId == elemento.codTurma.objectId && dataMatriculados < data && $scope.aul.dataSelecionada.data == elemento.data){
-					for(var y=0;y<$scope.matriculadosIndividual.length;y++){
-						if($scope.matriculadosIndividual[y].objectId == $scope.alunos[i].objectId ){
+				else if(anoAluno <= ano && $scope.alunos[i].selecionado == true && $scope.alunos[i].objectId == elemento.codAluno && $scope.matriculadosIndAnual.length > 0 && $scope.turma.select.objectId == elemento.codTurma.objectId){
+					for(var y=0;y<$scope.matriculadosIndAnual.length;y++){
+						if($scope.matriculadosIndAnual[y].objectId == $scope.alunos[i].objectId ){
 							achou++
 						}
-						if(achou < 1 && $scope.matriculadosIndividual[y].objectId != $scope.alunos[i].objectId){
-							$scope.matriculadosIndividual.push($scope.alunos[i])
 
-						}
+
+					}
+					if(achou < 1){
+						$scope.matriculadosIndAnual.push($scope.alunos[i])
 
 					}
 
@@ -941,15 +1063,68 @@ app.controller('ctrlTurma', function ($scope,turmasAPI,$window,professoresAPI,al
 				}
 
 			})
+		}
+
+		$scope.anualIndividual={"total":{"matriculadosIndAnual":$scope.matriculadosIndAnual.length,"presentesAnual":$scope.presentesAnual.length,"bibliaPreAnual":$scope.bibliaPreAnual.length,"revistaPreAnual":$scope.revistaPreAnual.length}};
+		$scope.mostraAnual = true;
+
+	}else{
+		alert("Fora do periodo para gerar relatório anual")
+	}
 
 }
 
-$scope.profindividual = $scope.aulas.filter(function(elemento){
-	if( elemento.codTurma.objectId == $scope.turma.select.objectId && elemento.data == $scope.aul.dataSelecionada.data)	
-		return elemento
-})
-$scope.individual={"total":{"matriculadosIndividual":$scope.matriculadosIndividual.length,"bibliasPindividual":$scope.bibliaPindividual.length,
-"revistaPindividual":$scope.revistaPindividual.length,"profindividual":$scope.profindividual[0].professor,"presencaindividual":$scope.presencaindividual.length}};
+$scope.relatorioIndividual = function(){
+	var achou = 0
+	$scope.presencaindividual=[]
+	$scope.matriculadosIndividual=[]
+	$scope.bibliaPindividual=[]
+	$scope.profindividual=[]
+
+	$scope.bibliaPindividual = $scope.aulas.filter(function(elemento){
+		if(elemento.biblia == "presente" && elemento.codTurma.objectId == $scope.turma.select.objectId && elemento.data == $scope.aul.dataSelecionada.data)	
+			return elemento
+	})
+
+	$scope.revistaPindividual = $scope.aulas.filter(function(elemento){
+		if(elemento.revista == "presente" && elemento.codTurma.objectId == $scope.turma.select.objectId && elemento.data == $scope.aul.dataSelecionada.data)	
+			return elemento
+	})
+
+	for(var y = 0; y<$scope.alunos.length;y++){
+
+		$scope.aulas.filter(function(elemento){
+			if(elemento.codTurma.objectId == $scope.turma.select.objectId && elemento.data == $scope.aul.dataSelecionada.data && elemento.codAluno == $scope.alunos[y].objectId)	
+				return $scope.presencaindividual.push($scope.alunos[y])
+		})
+	}
+
+
+
+	for(var i = 0; i < $scope.alunos.length;i++){
+		var dataA = new Date();
+		var dataFim = new Date("July 01,"+ dataA.getFullYear());
+		for (var j = 0; j <$scope.turma.select.aluTurma.length; j++) {
+			if(  $scope.alunos[i].created < dataFim.getTime() && $scope.alunos[i].selecionado == true  ){
+				if($scope.turma.select.aluTurma[j].objectId == $scope.alunos[i].objectId){
+					$scope.matriculadosIndividual.push($scope.alunos[i])
+
+				}
+			}
+		};
+
+	}			
+
+
+
+
+	$scope.profindividual = $scope.aulas.filter(function(elemento){
+		if( elemento.codTurma.objectId == $scope.turma.select.objectId && elemento.data == $scope.aul.dataSelecionada.data)	
+			return elemento
+	})
+
+	$scope.individual={"total":{"matriculadosIndividual":$scope.matriculadosIndividual.length,"bibliasPindividual":$scope.bibliaPindividual.length,
+	"revistaPindividual":$scope.revistaPindividual.length,"profindividual":$scope.profindividual[0].professor,"presencaindividual":$scope.presencaindividual.length}};
 }
 
 $scope.geral = function(){
@@ -959,6 +1134,7 @@ $scope.geral = function(){
 	$scope.bibliasPresentes=[]
 	$scope.matriculadosGeral=[]
 	$scope.revistasPresentes=[]
+	$scope.carregarRelatorioSemanal();
 
 	$scope.presentes = $scope.aulas.filter(function(elemento){
 		if(elemento.data == $scope.aul.dataSelecionada.data) return elemento
@@ -969,10 +1145,10 @@ $scope.geral = function(){
 
 	$scope.alunos.filter(function(elemento){
 		var dataMatriculados = new Date(elemento.created);
+		dataMatriculados.setDate(dataMatriculados.getDate()-1)
 		var data = new Date($scope.aul.dataSelecionada.data);
-		if(data.getTime() > dataMatriculados.getTime()) return $scope.matriculadosGeral.push(elemento)
+		if( elemento.selecionado == true && data > dataMatriculados) return $scope.matriculadosGeral.push(elemento)
 	})
-	console.log($scope.matriculadosGeral);
 
 	$scope.revistasPresentes = $scope.aulas.filter(function(elemento){
 		if(elemento.revista == "presente"  && elemento.data == $scope.aul.dataSelecionada.data) return elemento
@@ -985,28 +1161,215 @@ $scope.geral = function(){
 }
 
 $scope.limpar = function(){
-	var dt = document.getElementsByName("dataSelect");  
-	for(var i = 0; i < dt.length;i++){
-		dt[i].checked = false;
-	}
-	$scope.relatorios=[]
-	$scope.presentes=[]
+	$scope.carregarRelatorioSemanal();
+
+	$scope.individual=[]
+	$scope.presencas=[]
 	$scope.turma = [];
 	$scope.mostra = false;
+	$scope.mostraAnual = false;
+	$scope.mostraTrimestre=false;
+	$scope.trimestres=[]
+	$scope.anualIndividual=[]
 	delete $scope.relatorio;
-
+	delete $scope.relTrimestre
+	delete $scope.aul
+	delete $scope.relAnual
 	$scope.tpRec.$setPristine();
 
 }
-$scope.colocaFalse = function(){
-	var dt = document.getElementsByName("dataSelect");  
-	for(var i = 0; i < dt.length;i++){
-		dt[i].checked = false;
+$scope.gerar = function(){
 
+	for (var i = 0; i < $scope.relatorioSemanal.length; i++) {
+		if($scope.relatorioSemanal.length==0){
+			servicesAPI.deleteRelatorioSemanal($scope.relatorioSemanal[0].objectId).success(function (response,data) {
+
+			});
+		}else{
+
+			servicesAPI.deleteRelatorioSemanal($scope.relatorioSemanal[i].objectId).success(function (response,data) {
+			});
+		}
+	};
+	if($scope.turma.select == null){
+		$scope.saveRelatorioSemanal()
+	}else if($scope.turma.select != null){
+		$scope.saveRelatorioSemanalIndividual()
 	}
 
 }
+
+$scope.gerarTri = function(){
+
+	for (var i = 0; i < $scope.relatorioTrim.length; i++) {
+		if($scope.relatorioTrim.length==0){
+			servicesAPI.deleteRelatorioTrimestral($scope.relatorioTrim[0].objectId).success(function (response,data) {
+
+			});
+		}else{
+
+			servicesAPI.deleteRelatorioTrimestral($scope.relatorioTrim[i].objectId).success(function (response,data) {
+				console.log(data);
+
+			});
+		}
+	};
+	if($scope.turma.select == null){
+		$scope.saveRelatorioTrimestral()
+	}else if($scope.turma.select != null){
+		$scope.saveRelatorioTrimestralIndividual()
+	}
+
+}
+dataNome = new Date();
+var _canvas = null;
+
+$(function() {
+
+	$("#downlad").on("click", function(e) {
+		e.preventDefault();
+
+		html2canvas($("#downloadsemana").get(0), {
+			onrendered: function(canvas) {
+
+				var imgData = canvas.toDataURL('image/png');
+				console.log('Report Image URL: '+imgData);
+				var doc = new jsPDF('landscape');
+
+				doc.addImage(imgData, 'PNG', 10, 0, 290, 115);
+				doc.save("relatório-"+dataNome.getTime());
+			}
+		});
+	});
+})
+
+$scope.saveRelatorioSemanal = function(){
+	presencas={
+		"matriculadosGeral":$scope.presencas.total.matriculadosGeral,
+		"presenca":$scope.presencas.total.presenca,
+		"bibliasPre":$scope.presencas.total.bibliasPre,
+		"revistasPre":$scope.presencas.total.revistasPre
+
+	}
+
+
+	servicesAPI.setRelatorioSemanal(presencas).success(function(data){
+		window.location.reload()
+
+		window.open("/Tcc/index.html#/relatorioSemanal",'_blank')
+
+	}).error(function(data){
+
+	});
+
+}
+
+$scope.saveRelatorioSemanalIndividual = function(){
+	presencas={
+		"matriculadosGeral":$scope.individual.total.matriculadosIndividual,
+		"presencaindividual":$scope.individual.total.presencaindividual,
+		"bibliasPre":$scope.individual.total.bibliasPindividual,
+		"revistasPre":$scope.individual.total.revistaPindividual,
+		"profindividual":$scope.individual.total.profindividual
+	}
+
+
+	servicesAPI.setRelatorioSemanal(presencas).success(function(data){
+		window.location.reload()
+
+		window.open("/Tcc/index.html#/relatorioSemanalTurma",'_blank')
+
+	}).error(function(data){
+
+	});
+
+}
+
+$scope.saveRelatorioTrimestral = function(){
+	presencas={
+		"matriculadosTri":$scope.trimestres.total.matriculadosTri,
+		"presencaTri":$scope.trimestres.total.presencaTri,
+		"bibliasPresentesTri":$scope.trimestres.total.bibliasPresentesTri,
+		"revistasPresentesTri":$scope.trimestres.total.revistasPresentesTri,
+	}
+
+
+	servicesAPI.setRelatorioTrimestral(presencas).success(function(data){
+		window.location.reload()
+
+		window.open("/Tcc/index.html#/relatorioTrimestral",'_blank')
+
+	}).error(function(data){
+
+	});
+
+}
+
+$scope.saveRelatorioTrimestralIndividual= function(){
+	presencas={
+		"matriculadosTriGeral":$scope.trimestresInd.total.matriculadosTri,
+		"presencaTriindividual":$scope.trimestresInd.total.presencaTri,
+		"bibliasTriPre":$scope.trimestresInd.total.bibliasPresentesTri,
+		"revistasTriPre":$scope.trimestresInd.total.revistasPresentesTri,
+	}
+
+
+	servicesAPI.setRelatorioTrimestral(presencas).success(function(data){
+		window.location.reload()
+
+
+		window.open("/Tcc/index.html#/relatorioTrimestralTurma",'_blank')
+
+	}).error(function(data){
+
+	});
+
+}
+
+$scope.saveRelatorioAnual= function(){
+	presencas={
+		"matriculadosGeral":$scope.individual.total.matriculadosIndividual,
+		"presencaindividual":$scope.individual.total.presencaindividual,
+		"bibliasPre":$scope.individual.total.bibliasPindividual,
+		"revistasPre":$scope.individual.total.revistaPindividual,
+		"profindividual":$scope.individual.total.profindividual
+	}
+
+
+	servicesAPI.setRelatorioSemanal(presencas).success(function(data){
+		window.location.reload()
+
+		window.open("/Tcc/index.html#/relatorioSemanalIndividual",'_blank')
+
+	}).error(function(data){
+
+	});
+
+}
+$scope.saveRelatorioAnualIndividual = function(){
+	presencas={
+		"matriculadosGeral":$scope.individual.total.matriculadosIndividual,
+		"presencaindividual":$scope.individual.total.presencaindividual,
+		"bibliasPre":$scope.individual.total.bibliasPindividual,
+		"revistasPre":$scope.individual.total.revistaPindividual,
+		"profindividual":$scope.individual.total.profindividual
+	}
+
+
+	servicesAPI.setRelatorioSemanal(presencas).success(function(data){
+		window.location.reload()
+
+		window.open("/Tcc/index.html#/relatorioSemanalIndividual",'_blank')
+
+	}).error(function(data){
+
+	});
+
+}
 $scope.carregarTurma();
+$scope.carregarRelatorioSemanal();
+$scope.carregarRelatorioTrimestral();
+
 $scope.carregarProfessor();
 $scope.carregarAluno();
 $scope.carregarTrimestre();

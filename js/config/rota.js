@@ -1,5 +1,6 @@
 app.config(["$routeProvider","$locationProvider", function ($routeProvider,$locationProvider) {
-
+	
+	
 	$routeProvider
 	.when("/login", {
 		templateUrl: "/Tcc/views/usuario/login.html",
@@ -47,6 +48,22 @@ app.config(["$routeProvider","$locationProvider", function ($routeProvider,$loca
 	})
 	.when("/home", {
 		templateUrl: "/Tcc/views/home/home.html",
+		controller: "ctrlTurma"
+	})
+	.when("/relatorioSemanal", {
+		templateUrl: "/Tcc/views/relatorios/semanal.html",
+		controller: "ctrlTurma"
+	})
+	.when("/relatorioSemanalTurma", {
+		templateUrl: "/Tcc/views/relatorios/semanalIndividual.html",
+		controller: "ctrlTurma"
+	})
+	.when("/relatorioTrimestral", {
+		templateUrl: "/Tcc/views/relatorios/trimestral.html",
+		controller: "ctrlTurma"
+	})
+	.when("/relatorioTrimestralTurma", {
+		templateUrl: "/Tcc/views/relatorios/trimestralIndividual.html",
 		controller: "ctrlTurma"
 	})
 	.otherwise({ redirectTo: "/login" });

@@ -23,7 +23,7 @@
 						</th>
 						
 						<th ng-show="mostraAnual == true">
-							<select ng-model="turma.select" ng-options="turma.nome for turma in turmas" ng-change="" >
+							<select ng-model="turma.select" ng-options="turma.nome for turma in turmas" ng-change="relatorioAnualIndividual()" >
 								<option value="">Selecione uma turma</option>
 							</select>
 						</th>
@@ -32,88 +32,101 @@
 						<th>Quantidade de Presenças</th>
 						<th>Presença de Biblias</th>
 						<th>Presença de Revistas</th>
-						<th ng-show="turma.select != null">Professor</th>
-						<th ng-show="mostra == true"></th>
+						<th ng-show="turma.select != null && mostra == true">Professor</th>
+						<th ng-show="turma.select == null && mostra ==false"></th>
+						<th ng-show="mostra == true || (turma.select != null && mostraTrimestre == true)"></th>
 					</tr>
 				</thead>
 				<tbody >
-					<tr dir-paginate="pre in presencas | filter:busca | itemsPerPage: pageSize"
-					current-page="currentPage" pagination-id="aluPagination" ng-show="turma.select == null && mostra == true && relatorio=='Semanal'">
-					<td></td>
-					<td>{{pre.matriculadosGeral}}</td>
-					<td>{{pre.presenca}}</td>
-					<td>{{pre.bibliasPre}}</td>
-					<td>{{pre.revistasPre}}</td>
-
-					
-					<td>
-						<a href="#aluno" class="btn btn-info btn-xs edit" role="button" data-toggle="modal"
-						ng-click="edit(aluno)"><i class="glyphicon glyphicon-edit"></i> Download</a>
-						
-					</td>
-				</tr>
-				<tr dir-paginate="rela in individual | filter:busca | itemsPerPage: pageSize"
-				current-page="currentPage" pagination-id="aluPagination" ng-show="turma.select != null && mostra == true && relatorio=='Semanal'">
-				<td></td>
-				<td>{{rela.matriculadosIndividual}}</td>
-				<td>{{rela.presencaindividual}}</td>
-				<td>{{rela.bibliasPindividual}}</td>
-				<td>{{rela.revistaPindividual}}</td>
-				<td>{{rela.profindividual}}</td>
-				<td>
-					<a href="#aluno" class="btn btn-info btn-xs edit" role="button" data-toggle="modal"
-					ng-click="edit(aluno)"><i class="glyphicon glyphicon-edit"></i> Download</a>
-
-				</td>
-			</tr>
-
-			<tr dir-paginate="tri in trimestres | filter:busca | itemsPerPage: pageSize"
-			current-page="currentPage" pagination-id="aluPagination" 
-			ng-show="turma.select == null && mostraTrimestre == true && relatorio=='Trimestral'">
-			<td></td>
-			<td>{{tri.matriculadosTri}}</td>
-			<td>{{tri.presencaTri}}</td>
-			<td>{{tri.bibliasPresentesTri}}</td>
-			<td>{{tri.revistasPresentesTri}}</td>
-
-			
-			<td>
-				<tr dir-paginate="tri in trimestres | filter:busca | itemsPerPage: pageSize"
-				current-page="currentPage" pagination-id="aluPagination" 
-				ng-show="turma.select != null && mostraTrimestre == true && relatorio=='Trimestral'">
-				<td></td>
-				<td>{{tri.matriculadosTri}}</td>
-				<td>{{tri.presencaTri}}</td>
-				<td>{{tri.bibliasPresentesTri}}</td>
-				<td>{{tri.revistasPresentesTri}}</td>
+					<tr ng-repeat="pre in presencas"  ng-show="turma.select == null && mostra == true && relatorio=='Semanal'">
+						<td></td>
+						<td>{{pre.matriculadosGeral}}</td>
+						<td>{{pre.presenca}}</td>
+						<td>{{pre.bibliasPre}}</td>
+						<td>{{pre.revistasPre}}</td>
 
 
-				<td>
-					<a href="#aluno" class="btn btn-info btn-xs edit" role="button" data-toggle="modal"
-					ng-click="edit(aluno)"><i class="glyphicon glyphicon-edit"></i> Download</a>
+						<td>
+							<a href="" class="btn btn-info btn-xs edit" id="downlad" 
+							ng-click="gerar()"><i class="glyphicon glyphicon-edit"></i> Download</a>
 
-				</td>
-			</tr>
+						</td>
+					</tr>
+					<tr ng-repeat="rela in individual" ng-show="turma.select != null && mostra == true && relatorio=='Semanal'">
+						<td></td>
+						<td>{{rela.matriculadosIndividual}}</td>
+						<td>{{rela.presencaindividual}}</td>
+						<td>{{rela.bibliasPindividual}}</td>
+						<td>{{rela.revistaPindividual}}</td>
+						<td ng-show="turma.select != null && mostra == true">{{rela.profindividual}}</td>
+						<td>
+							<a href=""  id="downlad" class="btn btn-info btn-xs edit" ng-click="gerar()" ><i class="glyphicon glyphicon-edit" ></i> Download</a>
 
-			<tr dir-paginate="ano in anualIndividual | filter:busca | itemsPerPage: pageSize"
-			current-page="currentPage" pagination-id="aluPagination" 
-			ng-show="turma.select == null && mostraAnual == true && relatorio=='Anual'">
-			<td></td>
-			<td>{{ano.bibliaPreAnual}}</td>
-			<td>{{ano.revistaPreAnual}}</td>
+						</td>
+					</tr>
+
+					<tr ng-repeat="tri in trimestres" ng-show="turma.select == null && mostraTrimestre == true && relatorio=='Trimestral'">
+						<td></td>
+						<td>{{tri.matriculadosTri}}</td>
+						<td>{{tri.presencaTri}}</td>
+						<td>{{tri.bibliasPresentesTri}}</td>
+						<td>{{tri.revistasPresentesTri}}</td>
 
 
-			<td>
-				<a href="#aluno" class="btn btn-info btn-xs edit" role="button" data-toggle="modal"
-				ng-click="edit(aluno)"><i class="glyphicon glyphicon-edit"></i> Download</a>
+						<td><a href="" class="btn btn-info btn-xs edit" role="button" data-toggle="modal"
+							ng-click="gerarTri()"><i class="glyphicon glyphicon-edit"></i> Download</a>
+						</td>
+					</tr>
+					<tr ng-repeat="trime in trimestresInd" ng-show="turma.select != null && mostraTrimestre == true && relatorio=='Trimestral'">
+						<td></td>
+						<td>{{trime.matriculadosTri}}</td>
+						<td>{{trime.presencaTri}}</td>
+						<td>{{trime.bibliasPresentesTri}}</td>
+						<td>{{trime.revistasPresentesTri}}</td>
 
-			</td>
-		</tr>
-	</tbody>
-</table>
-<dir-pagination-controls boundary-links="true"  template-url="views/dirPagination.tpl.html" pagination-id="aluPagination"></dir-pagination-controls>
+						<td>
+							<a href="" class="btn btn-info btn-xs edit" role="button" data-toggle="modal"
+							ng-click="gerarTri()"><i class="glyphicon glyphicon-edit"></i> Download</a>
+
+						</td>
+					</tr>
+
+					<tr ng-repeat="ano in anual" ng-show="turma.select == null && mostraAnual == true && relatorio=='Anual'">
+						<td></td>
+						<td>{{ano.matriculadosAnual}}</td>
+						<td>{{ano.presentesAnual}}</td>
+						<td>{{ano.bibliaPreAnual}}</td>
+						<td>{{ano.revistaPreAnual}}</td>
+
+
+						<td>
+							<a href="#aluno" class="btn btn-info btn-xs edit" role="button" data-toggle="modal"
+							ng-click="edit(aluno)"><i class="glyphicon glyphicon-edit"></i> Download</a>
+
+						</td>
+					</tr>
+
+					<tr ng-repeat="anoInd in anualIndividual" ng-show="turma.select != null && mostraAnual == true && relatorio=='Anual'">
+						<td></td>
+						<td>{{anoInd.matriculadosIndAnual}}</td>
+						<td>{{anoInd.presentesAnual}}</td>
+						<td>{{anoInd.bibliaPreAnual}}</td>
+						<td>{{anoInd.revistaPreAnual}}</td>
+
+
+						<td>
+							<a href="#aluno" class="btn btn-info btn-xs edit" role="button" data-toggle="modal"
+							ng-click="edit(aluno)"><i class="glyphicon glyphicon-edit"></i> Download</a>
+
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+
+		</div>
+	</div>
 </div>
-</div>
-</div>
 
 
+<rodapedirective></rodapedirective>

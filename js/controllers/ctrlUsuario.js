@@ -34,8 +34,8 @@ app.controller('ctrlUsuario', function ($scope,servicesAPI,$window,$timeout) {
 				$timeout(function() {
 					$scope.mudar = !$scope.mudar
 					$scope.usuario = []
-					$(window.document.location).attr('href',"/Tcc/index.html#/login"); 
-				}, 1000);
+					window.location.reload();
+				}, 2000);
 			}).error(function(data){
 				$scope.erroUserSave = true;
 				$timeout(function() {
@@ -171,7 +171,6 @@ app.controller('ctrlUsuario', function ($scope,servicesAPI,$window,$timeout) {
 
 		usuario={
 			"email":$scope.user[0].usuariosLogados.email,
-			"password":$scope.user[0].usuariosLogados.senha,
 			"cargo":$scope.user[0].usuariosLogados.cargo
 		}
 		servicesAPI.updateUsuario($scope.user[0].usuariosLogados.objectId, usuario).success(function(){

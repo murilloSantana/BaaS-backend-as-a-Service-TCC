@@ -27,7 +27,7 @@
               <div class="col-sm-4">
                 <label  class="col-sm-5 control-label">Turmas</label>
 
-                <select class="selectpicker form-control col-md-offset-2" ng-model="turma.select" ng-options="turma.codigo for turma in turmas">
+                <select class="selectpicker form-control col-md-offset-2" ng-model="turma.select" ng-options="turma.nome for turma in turmas" >
                   <option value="">Selecione uma turma</option>
 
                 </select>
@@ -35,36 +35,58 @@
             </div>
             <div class="form-group">
              <div class=" col-sm-4">
-               <label  class=" col-md-offset-2 control-label">Categoria</label>
-               <input type="text"  ng-model="revista.categoria" class="form-control col-md-offset-2" />
+               <label  class=" col-md-offset-2 control-label"  >Nome</label>
+               <input type="text"  ng-model="revista.nome" name="nome" ng-required="true" class="form-control col-md-offset-2" />
 
+               <div class="col-md-offset-2">
+                 <span  ng-show="revistaForm.nome.$error.required && !revistaForm.nome.$pristine" class="alert-danger" > 
+                  O campo nome é obrigatório.
+                </span>
+              </div>
+            </div>
+
+          </div>
+          <div class="form-group">
+           <div class=" col-sm-4">
+             <label  class=" col-md-offset-2 control-label">Categoria</label>
+             <input type="text"  ng-model="revista.categoria" ng-required="true" name="ctg" class="form-control col-md-offset-2" />
+
+             <div class="col-md-offset-2">
+               <span  ng-show="revistaForm.ctg.$error.required && !revistaForm.ctg.$pristine" class="alert-danger" > 
+                 O campo categoria é obrigatório.
+               </span>
              </div>
-
            </div>
-           <div class="form-group">
-             <div class=" col-sm-4">
-               <label  class=" col-md-offset-2 control-label">Tema</label>
-               <input type="text"  ng-model="revista.tema" class="form-control col-md-offset-2" />
 
+         </div>
+         <div class="form-group">
+           <div class=" col-sm-4">
+             <label  class=" col-md-offset-2 control-label">Tema</label>
+             <input type="text"  ng-model="revista.tema" ng-required="true" name="tm" class="form-control col-md-offset-2" />
+             <div class="col-md-offset-2">
+               <span  ng-show="revistaForm.tm.$error.required && !revistaForm.tm.$pristine" class="alert-danger" > 
+                 O campo tema é obrigatório.
+               </span>
              </div>
-
            </div>
 
+         </div>
 
 
-         </form>
-       </div>
+
+       </form>
+     </div>
 
 
-       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm();encaminhar()">Cancelar</button>
-        
+     <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true"  ng-click="limpaForm();encaminhar()">Cancelar</button>
 
-        <button type="button" class="btn btn-primary"   ng-click="saveRevista(turma)">Salvar</button>
 
-      </div>
+      <button type="button" class="btn btn-primary" ng-disabled="revistaForm.$invalid"  ng-click="saveRevista(turma)">Salvar</button>
+
     </div>
   </div>
+</div>
 </div>
 </div>
 </div>

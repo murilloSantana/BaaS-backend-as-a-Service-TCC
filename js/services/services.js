@@ -31,7 +31,151 @@ app.factory("servicesAPI", function($http){
 
 	}
 
+	var _getRelatorioSemanal= function(){
+		return $http.get('https://api.backendless.com/v1/data/Semanal', 
+		{
+
+			headers:{
+				'application-id': '6FE67292-F413-9B0A-FF75-FD3594DF2300',
+				'secret-key'    : '27C738CA-2AE7-F02B-FFCA-7BEC526B9A00',
+				'Content-Type':'application/json'
+			}
+
+		}).error(function(data){
+			console.log(data);
+
+		});
+
+	}
 	
+	var _setRelatorioSemanal = function(presencas){
+		return $http.post(' https://api.backendless.com/v1/data/Semanal',presencas,{
+
+			headers:{
+				'application-id': '6FE67292-F413-9B0A-FF75-FD3594DF2300',
+				'secret-key'    : '27C738CA-2AE7-F02B-FFCA-7BEC526B9A00',
+				'Content-Type':'application/json'
+			}
+			
+		}).error(function(data){
+			console.log(data);
+
+		});
+	}
+
+	var _deleteRelatorioSemanal = function(objectId){
+		return $http.delete('https://api.backendless.com/v1/data/Semanal/'+objectId, 
+		{
+
+			headers:{
+				'application-id': '6FE67292-F413-9B0A-FF75-FD3594DF2300',
+				'secret-key'    : '27C738CA-2AE7-F02B-FFCA-7BEC526B9A00',
+				'Content-Type':'application/json'
+			}
+
+		}).error(function(data){
+			console.log(data);
+
+		});
+
+	}
+
+	var _getRelatorioTrimestral= function(){
+		return $http.get('https://api.backendless.com/v1/data/Trimestral', 
+		{
+
+			headers:{
+				'application-id': '6FE67292-F413-9B0A-FF75-FD3594DF2300',
+				'secret-key'    : '27C738CA-2AE7-F02B-FFCA-7BEC526B9A00',
+				'Content-Type':'application/json'
+			}
+
+		}).error(function(data){
+			console.log(data);
+
+		});
+
+	}
+	
+	var _setRelatorioTrimestral = function(presencas){
+		return $http.post(' https://api.backendless.com/v1/data/Trimestral',presencas,{
+
+			headers:{
+				'application-id': '6FE67292-F413-9B0A-FF75-FD3594DF2300',
+				'secret-key'    : '27C738CA-2AE7-F02B-FFCA-7BEC526B9A00',
+				'Content-Type':'application/json'
+			}
+			
+		}).error(function(data){
+			console.log(data);
+
+		});
+	}
+	var _deleteRelatorioTrimestral= function(objectId){
+		return $http.delete('https://api.backendless.com/v1/data/Trimestral/'+objectId, 
+		{
+
+			headers:{
+				'application-id': '6FE67292-F413-9B0A-FF75-FD3594DF2300',
+				'secret-key'    : '27C738CA-2AE7-F02B-FFCA-7BEC526B9A00',
+				'Content-Type':'application/json'
+			}
+
+		}).error(function(data){
+			console.log(data);
+
+		});
+
+	}
+	var _getRelatorioAnual= function(){
+		return $http.get('https://api.backendless.com/v1/data/Anual', 
+		{
+
+			headers:{
+				'application-id': '6FE67292-F413-9B0A-FF75-FD3594DF2300',
+				'secret-key'    : '27C738CA-2AE7-F02B-FFCA-7BEC526B9A00',
+				'Content-Type':'application/json'
+			}
+
+		}).error(function(data){
+			console.log(data);
+
+		});
+
+	}
+	
+	var _setRelatorioAnual = function(presencas){
+		return $http.post(' https://api.backendless.com/v1/data/Anual',presencas,{
+
+			headers:{
+				'application-id': '6FE67292-F413-9B0A-FF75-FD3594DF2300',
+				'secret-key'    : '27C738CA-2AE7-F02B-FFCA-7BEC526B9A00',
+				'Content-Type':'application/json'
+			}
+			
+		}).error(function(data){
+			console.log(data);
+
+		});
+	}
+
+
+	var _deleteRelatorioAnual = function(objectId){
+		return $http.delete('https://api.backendless.com/v1/data/Anual/'+objectId, 
+		{
+
+			headers:{
+				'application-id': '6FE67292-F413-9B0A-FF75-FD3594DF2300',
+				'secret-key'    : '27C738CA-2AE7-F02B-FFCA-7BEC526B9A00',
+				'Content-Type':'application/json'
+			}
+
+		}).error(function(data){
+			console.log(data);
+
+		});
+
+	}
 
 	var _deleteEndereco = function(objectId){
 		return $http.delete('https://api.backendless.com/v1/data/Enderecos/'+objectId, 
@@ -75,8 +219,10 @@ app.factory("servicesAPI", function($http){
 			}
 
 		}).error(function(data){
-			console.log(data);
-
+			console.log(data.code);
+			if(data.code == 3006 || data.code == 3003){
+				alert("login ou senha inválidas")
+			}
 		});
 	}
 
@@ -198,6 +344,15 @@ app.factory("servicesAPI", function($http){
 		setLogados: _setLogados,
 		getLogados:_getLogados,
 		getSenha: _getSenha,
-		updateLogados: _updateLogados
+		updateLogados: _updateLogados,
+		setRelatorioSemanal: _setRelatorioSemanal,
+		getRelatorioSemanal: _getRelatorioSemanal,
+		deleteRelatorioSemanal: _deleteRelatorioSemanal,
+		getRelatorioTrimestral: _getRelatorioTrimestral,
+		setRelatorioTrimestral:_setRelatorioTrimestral,
+		deleteRelatorioTrimestral:_deleteRelatorioTrimestral,
+		getRelatorioAnual:_getRelatorioAnual,
+		setRelatorioAnual:_setRelatorioAnual,
+		deleteRelatorioAnual:_deleteRelatorioAnual
 	};
 })

@@ -3,7 +3,7 @@
 <div class="form-group">
 	<label  class="control-label pull-left">Turmas</label>
 	<div class="col-sm-4 ">
-		<select class="form-control" ng-model="turma" ng-change="inscreverAlunos()" ng-options="turma.codigo for turma in turmas">
+		<select class="form-control" ng-model="turma" ng-change="inscreverAlunos()" ng-options="turma.nome for turma in turmas">
 			<option value="">Selecione uma turma</option>
 
 		</select>

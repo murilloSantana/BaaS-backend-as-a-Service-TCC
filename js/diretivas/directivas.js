@@ -224,3 +224,15 @@ app.directive("cadastro",function(){
 
 
 });
+
+app.directive("rodapedirective",function(){
+	
+	return{
+
+		restrict:"E",
+		templateUrl:"/Tcc/views/rodape.html"
+
+	}
+
+
+});
